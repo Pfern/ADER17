@@ -65,10 +65,9 @@ Learning outcomes (LO) for each unit:
 		- Post-analysis: Functional Enrichment
 
 	LO_3 - Assess the general quality of the raw data from the sequencing facility
-		LO_3.1 - NGS data usually comes as fastq files
-		LO_3.2 - Each sequencing read is represented as 4 lines of text which includes sequence and quality
-		LO_3.3 - Use software like FastQC to process fastq files and produce QC reports
-		LO_3.4 - Read QC reports of raw data to assess the general quality of data and presence of sequence bias
+		LO_3.1 - Interpret what are fastq files and what is their content
+		LO_3.2 - Use software like FastQC to process fastq files and produce QC reports
+		LO_3.3 - Read QC reports of raw data to assess the general quality of data and presence of sequence bias
 
 	LO.4 - Do simple processing operations in the raw data to improve its quality
 		LO_4.1 - Use tools such as seqtk and trimmomatic to remove low quality bases from your reads
@@ -80,19 +79,18 @@ Learning outcomes (LO) for each unit:
 		LO_5.3 - Running an alignment: the SAM/BAM alignment format
 	
 	LO.6 - Assess the general quality of the alignments and detect possible problems
-		LO_6.1 - Interpreting General alignment statistics (% alignments)
-		LO_6.2 - Visualizing alignments in IGV for single genes
+		LO_6.1 - Visualizing alignments in IGV for single genes
+		LO_6.2 - Use tools such as RSeQC to assess quality of alignments
 
 	LO.7 - Generate tables of counts using the alignment and a reference gene annotation
 		LO_7.1 - What is a reference gene annotation, versioning and where to obtain
 		LO_7.2 - The process of generating gene counts from genome aligments
 		LO_7.3 - Using tools such as htseq-counts to generate table of gene counts
-		LO_7.4 - Checking the table of gene counts for possible problems
 
 	LO.8 - Generate lists of differentially expressed genes, at least for a simple pairwise comparison
 		LO_8.1 - Using the R package edgeR to produce a pairwise differential expression analysis
 		LO_8.2 - Interpretation and visualization of results
-		LO_8.3 - More complex settings: Generalized Linear Models
+		LO_8.3 - Use more complex settings: Generalized Linear Models
 
 	LO.9 - Perform simple functional enrichment analysis and understand the concepts behind them
 		(Daniel Faria)
@@ -102,43 +100,85 @@ Learning outcomes (LO) for each unit:
 
 For each outcome design an exercise 
 
-	* LO_1.1 - Question: What choices do you have when sending your samples to sequencing facility?
-		(ask in the morning wrap-up of the following day)
+	LO_1.1 - Question: What choices do you have when sending your samples to sequencing facility?
 
-	* LO_1.2 - Question: How do these choices influence the kind of questions you want to answer?
-		(ask in the morning wrap-up of the following day)
+	LO_1.2 - Question: How do these choices influence the kind of questions you can answer?
 
-	* LO_2 - Question: What are the steps in RNA-Seq data analysis and their order
-		(ask in the morning wrap-up of the following day)
+	LO_2 - Question: What are the steps in RNA-Seq data analysis and their order
 
-	* LO_3.1 - Question: What is the type of files you usually get from a NGS sequencing facility?
-		(ask in the morning wrap-up of the following day)
+	LO_3.1 - Question: What information is in fastq files, and how is it organized?
 
-	* LO_3.2 - Question: What information is in fastq files, and how is it organized?
-		(ask in the morning wrap-up of the following day)
+	LO_3.2 - Use FastQC to produce QC reports from example fastq files
 
-	* LO_3.3 - Use FastQC (in galaxy, local GUI or commandline) to produce QC reports from example fastq files
-
-	* LO_3.4 - Use example FastQC reports to assess data quality and possible presence of sequence bias
+	LO_3.3 - Use example FastQC reports to assess data quality and possible presence of sequence bias
 		* Detect low quality bases in the QC reports
-		* Detect sequence bias and possible presence of contaminants, adaptors
+		* Detect sequence bias and possible presence of adaptors and other contaminants
 
-	* LO_4.1 - Remove low quality bases from sequencing reads:
+	LO_4.1 - Remove low quality bases from sequencing reads:
 		* Use seqtk to remove a fixed number of bases from either ends of a fastq
-		* Use seqtk to remove low quality basess from end of a fastq file
-		* Use trimmomatic to remove low quality basess from end of a fastq file using more complex approaches
+		* Use seqtk to remove low quality bases from end of a fastq file
+		* Use trimmomatic to filter/trim low quality bases using more complex approaches
 
-	* LO_4.2 - Remove artefactual sequences from sequencing reads using cutadapt:
-		* Remove Illumina adaptor 
-		* Remove PolyA tails
+	LO_4.2 - Remove artefactual sequences from sequencing reads:
+		* Remove Illumina adaptor using cutadapt
+		* Remove PolyA tails using cutadapt
+		* check results using FastQC on filtered data
 
+	LO.5.1 - What is a reference genome, versioning and where to obtain genomes
+		* Question: Are genomes constant?
+		* Obtain genome fasta from Ensembl
+	
+	LO_5.2 - Alignment software: tophat2/hisat2; bwa; sailfish/salmon (optional)
+		* Question: what are the conditions of using burrows-wheeler approaches?	
+		* Prepare a reference genome to use with hisat2 and bwa
 
+	LO_5.3 - Running an alignment: the SAM/BAM alignment format
+		* Run hisat2 / bwa mem in an example dataset
+		* Question: what is the SAM format; what is the BAM format?
+	
+	LO_6.1 - Visualizing alignments in IGV for single genes
+		* Open IGV and visualize example BAM files for example genes
+
+	LO_6.2 - Use tools such as RSeQC to assess quality of alignments
+		* Use tools such as RSeQC and Qualimap to generate QC reports based on alignments
+		* Interpret general alignment statistics such as percentage of aligned reads
+		* Check the reports to assess RNA integrity and diversity
+
+	LO_7.1 - What is a reference gene annotation, versioning and where to obtain
+		* Question: what is the GFF/GTF format?
+		* Obtain genome GTF from Ensembl
+
+	LO_7.2 - The process of generating gene counts from genome aligments
+		* Question: what parameters we need to consider when counting?
+
+	LO_7.3 - Using tools such as htseq-counts to generate table of gene counts
+		* Use tools such as htseq-counts to generate table of gene counts in example datasets
+
+	LO_8.1 - Using the R package edgeR to produce a pairwise differential expression analysis
+		* Use Galaxy to produce differentially expressed genes with edgeR
+		* Using edgeR in R and RStudio 
+
+	LO_8.2 - Interpretation and visualization of results
+		* Produce PCA plot comparing all samples: outlier detection
+		* Visualize expression profiles of top differentially expressed genes
+		* Produce other plots such as vulcano plots
+
+	LO_8.3 - Use more complex settings: Generalized Linear Models
+		* Account for confounders using Generalized Linear Models
+		* Performing ANOVA-like comparisons
+
+	LO.9 - Perform simple functional enrichment analysis and understand the concepts behind them
+		(Daniel Faria)
+		LO_9.1 - Functional annotations: what are these and where to get them
+		LO_9.2 - The statistics behind functional enrichment analysis
+		LO_9.3 - Using functional enrichment analysis with your lists of genes
 
     For each exercise identify the short lecture needed and the materials
 
 
+# Detailed Program [available here][mkdnlink].
 
-    Compose a schedule, spreading moments of wrap-up, feedback, Q&A, etc. 
+[mkdnlink]: program.md
 
 
 
