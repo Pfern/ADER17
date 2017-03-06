@@ -40,19 +40,23 @@ At the end of the course, we expect every participant to be able to:
 	8. Generate lists of differentially expressed genes, at least for a simple pairwise comparison
 	9. Perform simple functional enrichment analysis and understand the concepts behind them
 
-For this, we will provide small example datasets that students can use to learn. 
+For this, we will provide small example datasets that participants can use to learn. 
 
-Students are encouraged to bring their own data and try some of the concepts they learned. For simple cases, participants may even be able to generate the complete analysis on their own data.
+Participants are encouraged to bring their own data and try some of the concepts they learned. For simple cases, participants may even be able to generate the complete analysis on their own data.
 
 
 # TODO
 
 Break down learning objectives in units (sub-objectives) that can be assigned to instructors:
+
 	1. List broad characteristics of NGS technologies and choose adequate sequencing for your biological question
+
 		* List broad characteristics of NGS technologies
 		* Choose adequate sequencing for your biological question
+
 	2. Have a broad overview of the steps in the analysis of RNA-Seq differential expression experiments
-	* Assess the general quality of the raw data from the sequencing facility
+	3. Assess the general quality of the raw data from the sequencing facility
+		*
 	* Do simple processing operations in the raw data to improve its quality
 	* Generate alignments against a reference genome
 	* Assess the general quality of the alignments and detect possible problems
