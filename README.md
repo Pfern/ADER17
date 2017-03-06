@@ -50,10 +50,8 @@ Participants are encouraged to bring their own data and try some of the concepts
 Break down learning objectives in units (sub-objectives) that can be assigned to instructors:
 
 	1. List broad characteristics of NGS technologies and choose adequate sequencing for your biological question
-
-		* List broad characteristics of NGS technologies
-		* Choose adequate sequencing for your biological question
-
+		1.1 List broad characteristics of NGS technologies
+		1.2 Choose adequate sequencing for your biological question
 	2. Have a broad overview of the steps in the analysis of RNA-Seq differential expression experiments
 	3. Assess the general quality of the raw data from the sequencing facility
 		*
