@@ -22,9 +22,8 @@ Life Scientists who want to be able to use NGS data to evaluate gene expression 
 Familiarity with elementary statistics and a few basics of scripting in R will be helpful.
 
 Please have a look at the following resources and gauge your ability to use R in statitics at the basic level:
-
-	* http://blog.revolutionanalytics.com/2012/12/coursera-videos.html
-	* http://bitesizebio.com/webinar/20600/beginners-introduction-to-r-statistical-software
+	* [Coursera videos](http://blog.revolutionanalytics.com/2012/12/coursera-videos.html)
+	* [Introduction to r](http://bitesizebio.com/webinar/20600/beginners-introduction-to-r-statistical-software)
 
 Basic Unix command line skills, such as being able to navigate in a directory tree and copy files. See, for example, ["Session 1" of the Software Carpentry training for a Unix introduction](http://bioinformatics-core-shared-training.github.io/shell-novice/). 
 
@@ -32,7 +31,29 @@ Basic Unix command line skills, such as being able to navigate in a directory tr
 # Learning Objectives
 
 At the end of the course, we expect every participant to be able to:
-	* List broad characteristics of NGS technologies and choose adequate sequencing for your biological question
+	1 List broad characteristics of NGS technologies and choose adequate sequencing for your biological question
+	2 Have a broad overview of the steps in the analysis of RNA-Seq differential expression experiments
+	3 Assess the general quality of the raw data from the sequencing facility
+	4 Do simple processing operations in the raw data to improve its quality
+	5 Generate alignments against a reference genome
+	6 Assess the general quality of the alignments and detect possible problems
+	7 Generate tables of counts using the alignment and a reference gene annotation
+	8 Generate lists of differentially expressed genes, at least for a simple pairwise comparison
+	9 Perform simple functional enrichment analysis and understand the concepts behind them
+
+For this, we will provide small example datasets that students can use to learn. 
+
+Students are encouraged to bring their own data and try some of the concepts they learned. For simple cases, participants may even be able to generate the complete analysis on their own data.
+
+
+# TODO
+
+Define the overall learning objectives:
+
+Break down in units (sub-objectives) that can be assigned to instructors:
+	1 - List broad characteristics of NGS technologies and choose adequate sequencing for your biological question
+		1.1 - List broad characteristics of NGS technologies
+		1.2 - Choose adequate sequencing for your biological question
 	* Have a broad overview of the steps in the analysis of RNA-Seq differential expression experiments
 	* Assess the general quality of the raw data from the sequencing facility
 	* Do simple processing operations in the raw data to improve its quality
@@ -42,27 +63,11 @@ At the end of the course, we expect every participant to be able to:
 	* Generate lists of differentially expressed genes, at least for a simple pairwise comparison
 	* Perform simple functional enrichment analysis and understand the concepts behind them
 
-For this, we will provide small example datasets that students can use to learn. 
-
-Students are encouraged to bring their own data and try some of the concepts they learned. For simple cases, participants may even be able to generate the complete analysis on their own data.
-
-
-# TODO
-
-Pedro's suggestions:
-
-    Define the overall learning objectives: DONE
-    Break down in units (sub-objectives) that can be assigned to instructors: DONE
-
-    Identify learning outcomes (LO) for each unit.
-
-	* LO_1 - NGS has revolutionized sequencing and can be used to assess full transcriptomes
-
+Identify learning outcomes (LO) for each unit:
+	* LO_1 - Understand NGS technologies and plan your experiment:
 		* LO_1.1 - List possibilities and limitations of NGS sequencing technologies
 		* LO_1.2 - Choose adequate sequencing for your biological question
-
 	* LO_2 - List steps in the analysis of RNA-Seq differential expression experiments
-	
 		* QC of Raw Data; 
 		* Preprocessing of Raw Data (if needed); 
 		* Alignment of processed reads to reference genome; 
@@ -72,16 +77,12 @@ Pedro's suggestions:
 		* Preprocessing of count table
 		* Differential Analysis tests
 		* Post-analysis: Functional Enrichment
-
 	* LO_3 - Assess the general quality of the raw data from the sequencing facility
-
 		* LO_3.1 - NGS data (especially illumina) usually comes as fastq files
 		* LO_3.2 - Each sequencing read is represented as 4 lines of text which includes sequence and quality
 		* LO_3.3 - Use software like FastQC to process fastq files and produce QC reports
 		* LO_3.4 - Read QC reports of raw data to assess the general quality of data and presence of sequence bias
-
 	* LO.4 - Do simple processing operations in the raw data to improve its quality
-
 		* LO_4.1 - Use tools such as seqtk and trimmomatic to remove low quality bases from your reads
 		* LO_4.2 - Use tools such as cutadapt to remove adaptors and other artefactual sequences from your reads
 
