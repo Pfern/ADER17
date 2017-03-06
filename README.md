@@ -52,6 +52,7 @@ Identify learning outcomes (LO) for each unit:
 	LO_1 - Understand NGS technologies and plan your experiment:
 		LO_1.1 - List possibilities and limitations of NGS sequencing technologies
 		LO_1.2 - Choose adequate sequencing for your biological question
+
 	LO_2 - List steps in the analysis of RNA-Seq differential expression experiments:
 		- QC of Raw Data; 
 		- Preprocessing of Raw Data (if needed); 
@@ -62,11 +63,13 @@ Identify learning outcomes (LO) for each unit:
 		- Preprocessing of count table
 		- Differential Analysis tests
 		- Post-analysis: Functional Enrichment
+
 	LO_3 - Assess the general quality of the raw data from the sequencing facility
 		LO_3.1 - NGS data (especially illumina) usually comes as fastq files
 		LO_3.2 - Each sequencing read is represented as 4 lines of text which includes sequence and quality
 		LO_3.3 - Use software like FastQC to process fastq files and produce QC reports
 		LO_3.4 - Read QC reports of raw data to assess the general quality of data and presence of sequence bias
+
 	LO.4 - Do simple processing operations in the raw data to improve its quality
 		LO_4.1 - Use tools such as seqtk and trimmomatic to remove low quality bases from your reads
 		LO_4.2 - Use tools such as cutadapt to remove adaptors and other artefactual sequences from your reads
