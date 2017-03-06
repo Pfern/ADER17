@@ -51,7 +51,9 @@ Learning outcomes (LO) for each unit:
 
 	LO_1 - Understand NGS technologies and plan your experiment:
 		LO_1.1 - List possibilities and limitations of NGS sequencing technologies
+			Question: What choices do you have when sending your samples to sequencing facility?
 		LO_1.2 - Choose adequate sequencing for your biological question
+			
 
 	LO_2 - List steps in the analysis of RNA-Seq differential expression experiments:
 		- QC of Raw Data; 
@@ -98,9 +100,9 @@ Learning outcomes (LO) for each unit:
 		LO_9.2 - The statistics behind functional enrichment analysis
 		LO_9.3 - Using functional enrichment analysis with your lists of genes
 
-For each outcome design an exercise 
+Exercises for each 
 
-	LO_1.1 - Question: What choices do you have when sending your samples to sequencing facility?
+	LO_1.1 - 
 
 	LO_1.2 - Question: How do these choices influence the kind of questions you can answer?
 
@@ -173,10 +175,7 @@ For each outcome design an exercise
 		LO_9.2 - The statistics behind functional enrichment analysis
 		LO_9.3 - Using functional enrichment analysis with your lists of genes
 
-    For each exercise identify the short lecture needed and the materials
-
-
-# Detailed Program [available here][mkdnlink].
+## Detailed Program [available here][mkdnlink].
 
 [mkdnlink]: program.md
 
