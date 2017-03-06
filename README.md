@@ -47,22 +47,8 @@ Participants are encouraged to bring their own data and try some of the concepts
 
 # TODO
 
-Break down learning objectives in units (sub-objectives) that can be assigned to instructors:
-
-	1. List broad characteristics of NGS technologies and choose adequate sequencing for your biological question
-		1.1 List broad characteristics of NGS technologies
-		1.2 Choose adequate sequencing for your biological question
-	2. Have a broad overview of the steps in the analysis of RNA-Seq differential expression experiments
-	3. Assess the general quality of the raw data from the sequencing facility
-		*
-	* Do simple processing operations in the raw data to improve its quality
-	* Generate alignments against a reference genome
-	* Assess the general quality of the alignments and detect possible problems
-	* Generate tables of counts using the alignment and a reference gene annotation
-	* Generate lists of differentially expressed genes, at least for a simple pairwise comparison
-	* Perform simple functional enrichment analysis and understand the concepts behind them
-
 Identify learning outcomes (LO) for each unit:
+
 	* LO_1 - Understand NGS technologies and plan your experiment:
 		* LO_1.1 - List possibilities and limitations of NGS sequencing technologies
 		* LO_1.2 - Choose adequate sequencing for your biological question
