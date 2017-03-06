@@ -21,10 +21,7 @@ Life Scientists who want to be able to use NGS data to evaluate gene expression 
 
 Familiarity with elementary statistics and a few basics of scripting in R will be helpful.
 
-Please have a look at the following resources and gauge your ability to use R in statitics at the basic level:
-
-	* [Coursera videos](http://blog.revolutionanalytics.com/2012/12/coursera-videos.html)
-	* [Introduction to r](http://bitesizebio.com/webinar/20600/beginners-introduction-to-r-statistical-software)
+Please have a look at the following resources and gauge your ability to use R in statitics at the basic level: [Coursera videos](http://blog.revolutionanalytics.com/2012/12/coursera-videos.html); [Introduction to r](http://bitesizebio.com/webinar/20600/beginners-introduction-to-r-statistical-software)
 
 Basic Unix command line skills, such as being able to navigate in a directory tree and copy files. See, for example, ["Session 1" of the Software Carpentry training for a Unix introduction](http://bioinformatics-core-shared-training.github.io/shell-novice/). 
 
