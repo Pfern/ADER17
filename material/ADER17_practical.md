@@ -57,78 +57,86 @@ Other plots indicate biases in the nucleotidic content of the reads, either glob
 [images of positional bias, including positional biases of Nextera]
 
 
-
-
 # Learning Outcome 4: Do simple processing operations in the raw data to improve its quality
 
 ## LO 4.1 - Use tools such as seqtk and trimmomatic to remove low quality bases from your reads
 
 In most cases, particularly if you're sequencing short, single-end reads, the quality of your raw data is good enough to continue without any preprocessing. In fact, if you send your sequencing to an external facility, they often do these verifications and filtering for you, and you have “clean” sequences in the end, but it is always better to check. 
 
-But sometimes things can go wrong, and you may need to do something about it. As you may have noticed before, reads tend to lose quality towards their end, where there is a higher probability of erroneous bases being called. To avoid problems in subsequent analysis, you should remove regions of poor quality in your read, usually by trimming poor quality bases from the end.
+Nonetheless, sometimes things can go wrong, and you may need to do something about it. As you may have noticed before, reads tend to lose quality towards their end, where there is a higher probability of erroneous bases being called. To avoid problems in subsequent analysis, you should remove regions of poor quality in your read, usually by trimming them from the end of reads using tools such as [seqtk](https://github.com/lh3/seqtk). 
 
-TASK: Manually remove the bases with Q<30 (p=0.001) from the 3' end of the read you analysed before. Does this remove all lower quality bases from the read? What reasons you can think that may cause this? What other strategies you can imagine to filter your reads?
+QUESTION: Even if all bases that your machine reads have a Q=20 (1% error rate), what is the probability that one 100bp read is completely correct? To answer this, consider also that all bases are read independently.
 
+TASK: Use seqtk_trimfq with different error thresholds in the example datasets. Use FastQC to evaluate the impact of the procedure.
+
+QUESTION: If you are too stringent, you may remove too many bases, but if you are too lenient, you may fall in local optima, because behind a good quality base may be more bad quality ones. What other strategies you can imagine to filter your reads?
+
+Another popular tool to filter fastq files is [Trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic). This tool implements more ellaborate trimming strategies, such as average window threshold.
+
+Task: Use Trimmomatic to remove low quality bases from the example datasets. Notice that the default method in Trimmomatic is a 4bp window average, with a threshold of Q=20. Finally, look at the impact using FastQC of trimmed reads. NOTE: Trimmomatic requires you to specify that you use the "standard" Phred Q scale (fastqsanger), which was different from the one used in older datasets (before 2012), so you need to manually change the datatype of your dataset from generic fastq to fastqsanger.
 
 ## LO 4.2 - Use tools such as cutadapt to remove adaptors and other artefactual sequences from your reads
 
-Sequence machines often require that you add specific sequences (adaptors) to your DNA so that it can be sequenced. For many different reasons, such sequences may end up in your read, and you usually want to remove these adaptors. 
+Sequence machines often require that you add specific sequences (adaptors) to your DNA so that it can be sequenced. For many different reasons, such sequences may end up in your read, and you usually want to remove these adaptors. To remove them, not only you have to look for the sequence in the reads, but also allow for sequencing errors, as well as the presence of incomplete sequences. Tools such as [cutadapt](http://cutadapt.readthedocs.io/en/stable/guide.html) do precisely this.
 
-Adaptor used:
-GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT
+TASK: Use cutadapt to remove adaptors from sample_adaptors.fastq. In this sample, we know that we used the illumina adaptor AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC, so try to remove this from the 3' end of reads and see the impact of the procedure. What happened? You noticed that almost no read was affected. This is because what you get in reads is a readthrough, so what you are actually reading in the ends of reads is the reverse complement of the adaptor. Now, try the same procedure but with GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT (reverse complement of the previous). Much better, no? 
 
-This is rev comp of adaptor: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
+Another frequent "artefactual" sequence (in the sense that is non-genomic) present in RNA-Seq reads, particularly in datasets coming from TruSeq library preparation protocols (not so much with protocols like SMART-Seq that use Nextera), is poly-A tails. You can also remove them relatively easily using cutadapt with AAAAAAAAAA(...) or/and TTTTTTTTTT(...) as adaptors.
 
-If you need to do this processing yourself, there are many small free programs to do this, such as cutadapt 4 .
-You'll also need to know the adaptors that were used in your library preparation (eg. Illumina TruSeq)
+One issue of removing the adaptors is that you need to know which ones were used in your data. FastQC already can already give you which one was used, and you can then go to the illumina manual to search for its sequence. But since Illumina is used most of the time, these adaptors are already integrated in some tools like Trimmomatic, which also take in consideration issues like reverse complement. 
 
+TASK: Use Trimmomatic to remove adaptors from sample_adaptors.fastq using Truseq adaptors.
 
-Trimmomatic has already embedded a collection of known adaptors, so you often don't need to provide them.
+Overall, you can use Trimmommatic to do both quality and adaptor trimming. Moreover, Trimmomatic includes widely used adaptors and also transparently handles the issue of paired-end, in case you have this. So it's probably a good choice for general use.
 
-Overall, you can use Trimmommatic to do both quality and adaptor trimming. 
-Trimmomatic also handles the issue of paired-end, in case you have this. 
+Task: Use Trimmommatic to do quality filtering and adaptor trimming in sample_quality_and_adaptors.fastq (use Nextera adaptors), as well as in the paired-end example RNA-Seq data (use Truseq adaptors). Use FastQC to evaluate the impact of the procedure. Notice that, if you're too strict, you may end up loosing valuable data.
 
-[Note: Trimmomatic need to introduce a peculiarity: fastqsanger]
-
-
-Task: Use trimmommatic for the paired-end example RNA-Seq data. 
-
-
+Task: Use Trimmomatic or any of the other tools we tried so far in your own data, if necessary. Usually, particularly if you used small  single-end reads, your data should be ready to use from the start and you don't need to do anything.
 
 # Learning Outcome 5: Generate alignments of processed reads against a reference genome
 
 ## LO 5.1 - What is a reference genome, versioning and where to obtain genomes
 
-			Question: Are genomes constant?
-			Obtain genome fasta from Ensembl
+Now that you've checked the quality of your raw data, and did any necessary preprocessing, you should now be ready to use it. 
+
+To check which genes are expressing, you need to align your reads against a reference genome. These were (and are still) usually obtained through the efforts of large consortia, which eventually create portals that make the data available for the scientific community. [ENSEMBL](http://www.ensembl.org) (in Europe) and [UCSC genome browser](http://genome.ucsc.edu/) (in the US) emerged first as resources to display and explore the human data, and latter agglomerated data for other model and non-model organisms, making them very convenient resources for high quality genomes. 
+
+
+Another alternative is to use cDNA sequences directly as a reference. 
+
+
+
+Task: Obtain genomic fasta for Drosophila melanogaster from the Ensembl website. Finally, also download a fasta with cDNA. 
+
+
+Task: Obtain genomic and cDNA fasta from you species of interest from ENSEMBL. If you're using a non-vertebrate species, you may need to go to other Ensembl sites, such as Ensembl bacteria, protists, metazoa, or plants. Take note of the Ensembl version, as well as the version of your genome (in case later you wanto to integrate data that is not from Ensembl). 
 
 ## LO 5.2 - Alignment software: tophat2/hisat2; bwa; sailfish/salmon
 
+To be able to align millions of short reads to a (sometimes large) reference genome, novel, more efficient, alignment methods had to be developed. One popular method is based on the [burrows-wheeler transform](https://en.wikipedia.org/wiki/Burrows%E2%80%93Wheeler_transform) and the use of efficient data structures, of which [bwa](http://bio-bwa.sourceforge.net/) and [bowtie](http://bowtie-bio.sourceforge.net/index.shtml) are examples. They enable alignment of millions of reads in a few minutes, even in a common laptop. 
 
-After obtaining millions of short reads, we need to align them to a (sometimes large) reference genome. To achieve this, novel, more efficient, alignment methods had to be developed. One popular method is based on the burrows-wheeler transform 5 and the use of efficient data structures, of which bwa 6 and bowtie 7 are examples. They enable alignment of millions of reads in a few minutes, even in a laptop. 
+Methods such as the ones based on the burrows-wheeler transform make some assumptions to speed up the alignment process. Namely, they require the reference genome to be very similar to your sequenced DNA (less than 2-5% differences). For example, you probably cannot align mouse data to the human genome, although in the case of RNA-Seq this is less problematic since genes tend to be much better conserved than the rest of the genome (you would probably still bias your results to better conserved genes). Moreover, they are not optimal, and therefore sometimes make some mistakes, although they work quite well most of the time. 
 
-NOTE: burrows-wheeler transform makes some assumptions to speed up the alignment process. Namely, they require the reference genome to be very similar to your sequenced DNA (less than 2-5% differences). Moreover, they are not optimal, and therefore sometimes make some mistakes. 
+RNA-Seq, in eukaryotes contain the extra complication of splicing, whereas. 
+When using small, single-end reads, 
+
+Sailfish/Salmon are another set of more recent approaches that are quickly gaining in popularity.
 
 
-
-			Question: what are the conditions of using burrows-wheeler approaches?	
-			Prepare a reference genome to use with hisat2 and bwa
+	Question: what are the conditions of using burrows-wheeler approaches?	
+	Prepare a reference genome to use with hisat2 and bwa
 
 ## LO 5.3 - Run an alignment: the SAM/BAM alignment format
 
 
+Run hisat2 / bwa mem in an example dataset
 
-To store millions of alignments, researchers also had to develop new, more practical formats. The
-Sequence Alignment/Map (SAM) format 11 is a tabular text file format, where each line contains
-information for one alignment. SAM files are most often compressed as BAM (Binary sAM) files, to
-reduce space and allow direct access to alignments in any arbitrary region of the genome. Several tools
-only work with BAM files.
+To store millions of alignments, researchers also had to develop new, more practical formats. The Sequence Alignment/Map (SAM) format 11 is a tabular text file format, where each line contains information for one alignment. SAM files are most often compressed as BAM (Binary sAM) files, to reduce space and allow direct access to alignments in any arbitrary region of the genome. Several tools only work with BAM files.
 
 
-			Run hisat2 / bwa mem in an example dataset
 			Question: what is the SAM format; what is the BAM format?
 
-TASK: Look at Anc_bwa_merged_select.sam and Anc_paired_ssaha2_select.sam. Also briefly look at SAMv1.pdf describing the format to understand the information in the sam files.
+		Also briefly look at SAMv1.pdf describing the format to understand the information in the sam files.
 
 	
 # Learning Outcome 6: Assess the general quality of the alignments and detect possible problems
