@@ -52,17 +52,10 @@ One of the plots indicates the distribution of base qualities (as Q values repre
 
 [images of quality]
 
+Other plots indicate biases in the nucleotidic content of the reads, either globally (as the %GC plots), or positionally. Global bias in nucleotidic content can be useful to search for signs of contaminants. On the other hand, positional bias are useful to detect the presence of artefactual sequences in your reads such as the adaptors that are necessary to add to the fragments so that the machine can actually read them. Another insight you may obtain from this information are potential biases in the preparation of your library. For example, random hexamer priming is actually not truly random, and preferentially selects certain sequences. The currently popular transposase-based enzymatic protocol, although reasonably random, is also not completely random, and you can see this through positional bias, particularly in the beginning of reads.
 
+[images of positional bias, including positional biases of Nextera]
 
-Probably the most relevant are .
-
-
-When comparing fastq files generated from different technologies, you can see differences in their
-properties. Illumina machines generate shorter reads, usually all with the same length (before filtering).
-Pacbio and nanopore generate (much) longer reads, with diverse read lengths, and of a poorer quality.
-Illumina generates many more reads, making both technologies complementary to each other (this will
-become clearer when we look at specific applications). Finally, you can also notice that, independently
-of the technology, the quality of base quality tends to decrease along the length of the read
 
 
 
@@ -70,15 +63,35 @@ of the technology, the quality of base quality tends to decrease along the lengt
 
 ## LO 4.1 - Use tools such as seqtk and trimmomatic to remove low quality bases from your reads
 
+In most cases, particularly if you're sequencing short, single-end reads, the quality of your raw data is good enough to continue without any preprocessing. In fact, if you send your sequencing to an external facility, they often do these verifications and filtering for you, and you have “clean” sequences in the end, but it is always better to check. 
+
+But sometimes things can go wrong, and you may need to do something about it. As you may have noticed before, reads tend to lose quality towards their end, where there is a higher probability of erroneous bases being called. To avoid problems in subsequent analysis, you should remove regions of poor quality in your read, usually by trimming poor quality bases from the end.
+
+TASK: Manually remove the bases with Q<30 (p=0.001) from the 3' end of the read you analysed before. Does this remove all lower quality bases from the read? What reasons you can think that may cause this? What other strategies you can imagine to filter your reads?
 
 
 ## LO 4.2 - Use tools such as cutadapt to remove adaptors and other artefactual sequences from your reads
 
+Sequence machines often require that you add specific sequences (adaptors) to your DNA so that it can be sequenced. For many different reasons, such sequences may end up in your read, and you usually want to remove these adaptors. 
+
+Adaptor used:
+GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT
 
 This is rev comp of adaptor: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
 
+If you need to do this processing yourself, there are many small free programs to do this, such as cutadapt 4 .
+You'll also need to know the adaptors that were used in your library preparation (eg. Illumina TruSeq)
+
+
+Trimmomatic has already embedded a collection of known adaptors, so you often don't need to provide them.
 
 Overall, you can use Trimmommatic to do both quality and adaptor trimming. 
+Trimmomatic also handles the issue of paired-end, in case you have this. 
+
+[Note: Trimmomatic need to introduce a peculiarity: fastqsanger]
+
+
+Task: Use trimmommatic for the paired-end example RNA-Seq data. 
 
 
 
@@ -91,21 +104,123 @@ Overall, you can use Trimmommatic to do both quality and adaptor trimming.
 
 ## LO 5.2 - Alignment software: tophat2/hisat2; bwa; sailfish/salmon
 
+
+After obtaining millions of short reads, we need to align them to a (sometimes large) reference genome. To achieve this, novel, more efficient, alignment methods had to be developed. One popular method is based on the burrows-wheeler transform 5 and the use of efficient data structures, of which bwa 6 and bowtie 7 are examples. They enable alignment of millions of reads in a few minutes, even in a laptop. 
+
+NOTE: burrows-wheeler transform makes some assumptions to speed up the alignment process. Namely, they require the reference genome to be very similar to your sequenced DNA (less than 2-5% differences). Moreover, they are not optimal, and therefore sometimes make some mistakes. 
+
+
+
 			Question: what are the conditions of using burrows-wheeler approaches?	
 			Prepare a reference genome to use with hisat2 and bwa
 
 ## LO 5.3 - Run an alignment: the SAM/BAM alignment format
 
+
+
+To store millions of alignments, researchers also had to develop new, more practical formats. The
+Sequence Alignment/Map (SAM) format 11 is a tabular text file format, where each line contains
+information for one alignment. SAM files are most often compressed as BAM (Binary sAM) files, to
+reduce space and allow direct access to alignments in any arbitrary region of the genome. Several tools
+only work with BAM files.
+
+
 			Run hisat2 / bwa mem in an example dataset
 			Question: what is the SAM format; what is the BAM format?
+
+TASK: Look at Anc_bwa_merged_select.sam and Anc_paired_ssaha2_select.sam. Also briefly look at SAMv1.pdf describing the format to understand the information in the sam files.
+
 	
 # Learning Outcome 6: Assess the general quality of the alignments and detect possible problems
 
 		LO 6.1 - Visualizing alignments in IGV for single genes
 
+After finishing your analysis, even if you did all the quality checks, and obtained a list of variants, you
+may want to manually inspect your alignments (you should always manually inspect the regions that
+are most important for your analysis). For this, there is simple desktop software that you can use to
+visualize your data, such as IGV 17 or Tablet 18 .
+TASK: Run IGV and look at sample BAM files with alignments
+First you'll need a reference genome:
+
+Inspect the pairing information (need to set option on IGV to look at it)
+
+NOTE: next to .bam files there is a .bai file with the same name. The .bai file is called the BAM index
+file and it is used to enable tools such as IGV to navigate the alignments much faster (imagine if you
+needed to go through millions of alignments every time you moved around in the genome).
+
+[Note that you need to download the .bai file, as well as the bam]
+
+[Check if you can visualize with Galaxy - either directly, or see IGV link??]
+
+NOTE: Most genomes (particularly mamallian genomes) contain areas of low complexity, composed
+mostly of repetitive sequences. In the case of short reads, sometimes these align to multiple regions in
+the genome equally well, making it impossible to know where the fragment came from. Longer reads
+are needed to overcome these difficulties, or in the absence of these, paired-end data can also be used.
+Some aligners (such as bwa) can use information on paired reads to help disambiguate some
+alignments. Information on paired reads is also added to the SAM file when proper aligners are used.
+
+
+The data processing is similar to genomic resequencing. For eukaryotes, mRNA is usually spliced, and
+thus we need to use splice-aware aligners (eg. Tophat 24 ) to map short reads to a reference genome.
+TASK: Look at a RNA-Seq sample in IGV:
+- In IGV, load the Drosophila genome as reference; load gtf file annotation and alignment files (*.bam)
+- Look at position: 3L:15033260-15038204 (may need to change scale)
+- Look at position: X:20564838-20570348 (may need to change scale to 800 to see)
+- Look at position X:5793758-5799858 (compare coverage with previous examples)
+Notice the 3' bias, particularly in one of the replicates 
+
+[Show the graphs of RSeqQC and Qualimap with the real data? - bring BAM files, do NOT put the whole thing in git]
+
+Would you be able to detect all of what you saw here using microarrays?
+
+
+NOTE: Similarly to microarrays, RNA-Seq can be used to detect differential expression. Nonetheless,
+RNA sequencing suffer from multiple still poorly understood biases, and the methods to deal with them
+are not as mature as the methods handling microarrays. Moreover, to obtain better signal-to-noise you
+need more sequencing which makes it more expensive. Thus, for “simple” experiments, in organisms
+with good quality microarrays available, these may still be more cost-effective and easier to use.
+Usually, to perform differential expression analysis, one needs to count how many times a different
+transcript/gene is read. A popular tool to generate these counts from a SAM/BAM file is htseq-count 25 .
+TASK: Open example_RNA_counts.htseq.tab in the text editor or in a spreadsheet
+How would you about checking which genes are differential expressed?
+From these count files several methods can be then used to perform statistical tests. Given that
+sequencing data is based on discrete counts, most of the popular methods are based on derivations of
+the binomial distribution. Similarly to microarrays, there are many available tools to perform these
+analysis using the R language (such as edger and DESeq).
+TASK: Open example_RNA_counts.edger_analysis.tab and Dmelano_rnaseq.bayseq_diff.txt with a
+text editor or in a spreadsheet. How would you go about selecting genes of interest? What would you
+do with this list? Is statistically significant the same as biologically significant?
+NOTE: Several experiments can have different numbers of reads sequenced (for the same amount of
+RNA). Moreover, gene length also influences the number of counts. One common normalization is to
+transform counts into FPKM (fragments per kb per million aligned reads). Nonetheless this measure
+needs to be used with caution, particularly when comparing different loci.
+
+
+
+
+[Note that you can see variants also with RNA-Seq, if you're interested]
+
+
 		LO 6.2 - Use tools such as RSeQC and Qualimap to assess quality of alignments
 			Interpret general alignment statistics such as percentage of aligned reads
 			Check the reports to assess RNA integrity and diversity
+
+After generating alignments and obtaining a SAM/BAM file, how do I know this step went well? The
+same way as FastQC generates reports of fastq files to assess quality of raw data, there are programs
+that generate global reports on the quality of alignments. One popular tool for this is qualimap 12 .
+
+The way you check if the alignment step went well depends on your application. Usually,
+duplication levels higher than 20% are not a good sign (they're a sign of low input DNA and PCR
+artifacts) but again, depends on what you are sequencing and how much. Similarly, in the case of
+bacterial sequencing or targeted (eg. exonic) sequencing you expect >95% successful alignment, but if
+sequencing a full mamallian genome (with many duplicated areas) it may be normal to have as low as
+70-80% alignment success. If you have to check the expected “quality” for your application.
+
+
+Why duplication rates are frequently high in RNA-Seq? 
+
+
+[lot's of sequence outside annotation, can mean several things: annotation is not correct (eg. if you're working with a non-model organism); DNA contamination (which, if ); immature RNA;]
 
 [Show example plots of some IGC datasets, without showing the actual data!]
 
