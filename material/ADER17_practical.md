@@ -101,14 +101,11 @@ We've checked the quality of our raw data, and did any necessary preprocessing, 
 
 We now need to align the reads against a reference genome. Genomes were (and are still) usually obtained through the efforts of large consortia, which eventually create portals that make the data available for the scientific community. [ENSEMBL](http://www.ensembl.org) (in Europe) and [UCSC genome browser](http://genome.ucsc.edu/) (in the US) emerged first as resources to display and explore the human data, and latter agglomerated data for other model and non-model organisms, making them very convenient resources for high quality genomes. 
 
-Genome assemblies are continuously updated with new information, particularly for large eukaryotic genomes. Even the human genome, that was "completed" in 2001, is regularly being updated. More recent updates of the Human genome do not change the core sequence, but add for example alternative haplotypes for complex and highly variable regions such as the HLA. It is also very frequent to have several alternative genomes for the same species (eg. different lab strains of mice, or other model organisms), so take care to choose the one that most closely resembles the one you sequenced (important note: as long as the genome quality is good). 
+Genome assemblies are continuously updated with new information, particularly for large eukaryotic genomes. Even the human genome, that was "completed" in 2001, is regularly being updated. More recent updates of the Human genome do not change the core sequence, but add for example alternative haplotypes for complex and highly variable regions such as the HLA. It is also very frequent to have several alternative genomes for the same species (eg. different lab strains of mice, or other model organisms). Moreover, large genomes contain many repetitive elements, which are usually masked for secondary analysis like gene annotation. For the alignment of NGS data, it is usually recommended to use full, unmasked, sequences.
 
-It is therefore fundamental to register the version of the genome used, as well as from where and when it was obtained. When performing analysis using resources like Galaxy, genomes are often already integrated in those resources. You should always note as much information as possible about the genome you're using.
-
-
+It is therefore fundamental to register the version of the genome used, as well as from where (and when) it was obtained. When performing analysis using resources like Galaxy, genomes are often already integrated in those resources. You should always note as much information as possible about the genome you're using.
 
 Finally, another alternative is to use cDNA sequences directly as a reference. This is sometimes the only alternative, when full good quality genomes are not available. The presence of multiple alternative transcripts can make the alignment more difficult, but more recent approaches actually take advantage of this information, as we will see later. We can also select collections of cDNAs that are relevant for our analysis (eg. focusing on protein-coding cDNAs, and/or choosing a single representative cDNA per gene).
-
 
 Task: Obtain genomic fasta for Drosophila melanogaster from the Ensembl website. Finally, also download a fasta with cDNA. Take note of the Ensembl version, as well as the version of your genome (in case later you wanto to integrate data that is not from Ensembl). Obtain genomic and cDNA fasta from your species of interest from ENSEMBL.
 
@@ -118,16 +115,10 @@ To be able to align millions of short reads to a (sometimes large) reference gen
 
 Methods such as the ones based on the burrows-wheeler transform make some assumptions to speed up the alignment process. Namely, they require the reference genome to be very similar to your sequenced DNA (less than 2-5% differences). For example, you probably cannot align mouse data to the human genome, although in the case of RNA-Seq this is less problematic since genes tend to be much better conserved than the rest of the genome (you would probably still bias your results to better conserved genes). Moreover, they are not optimal, and therefore sometimes make some mistakes, although they work quite well most of the time. 
 
-RNA-Seq, in eukaryotes contain the extra complication of splicing, whereas. 
-
-When using small, single-end reads, 
+RNA-Seq, in eukaryotes contain the extra complication of splicing, where your read will be spread through multiple regions of the genome. When using small, single-end reads, this is less of a problem. Nonetheless, it is always a good idea to use an aligner that allows split reads. Tophat (based on bowtie) is a popular splice-aware aligner. It has more recently been superseded by [Hisat](https://ccb.jhu.edu/software/hisat2/index.shtml). Recent updates of bwa also allow splitting of reads.
 
 Finally, another set of more recent approaches that are quickly gaining in popularity.
 Sailfish/Salmon are
-
-
-	Question: what are the conditions of using burrows-wheeler approaches?	
-	Prepare a reference genome to use with hisat2 and bwa
 
 ## LO 5.3 - Run an alignment: the SAM/BAM alignment format
 
