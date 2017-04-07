@@ -79,7 +79,7 @@ Task: Use Trimmomatic to remove low quality bases from the example datasets. Not
 
 Sequence machines often require that you add specific sequences (adaptors) to your DNA so that it can be sequenced. For many different reasons, such sequences may end up in your read, and you usually want to remove these adaptors. To remove them, not only you have to look for the sequence in the reads, but also allow for sequencing errors, as well as the presence of incomplete sequences. Tools such as [cutadapt](http://cutadapt.readthedocs.io/en/stable/guide.html) do precisely this.
 
-TASK: Use cutadapt to remove adaptors from sample_adaptors.fastq. In this sample, we know that we used the illumina adaptor AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC, so try to remove this from the 3' end of reads and see the impact of the procedure. What happened? You noticed that almost no read was affected. This is because what you get in reads is a readthrough, so what you are actually reading in the ends of reads is the reverse complement of the adaptor. Now, try the same procedure but with GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT (reverse complement of the previous). Much better, no? 
+TASK: Use cutadapt to remove adaptors from sample_adaptors.fastq. In this sample, we know that we used the illumina adaptor GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT, so try to remove this from the 3' end of reads and see the impact of the procedure. What happened? You noticed that almost no read was affected. This is because what you get in reads is a readthrough, so what you are actually reading in the ends of reads is the reverse complement of the adaptor. Now, try the same procedure but with AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC (reverse complement of the previous). Much better, no? 
 
 Another frequent "artefactual" sequence (in the sense that is non-genomic) present in RNA-Seq reads, particularly in datasets coming from TruSeq library preparation protocols (not so much with protocols like SMART-Seq that use Nextera), is poly-A tails. You can also remove them relatively easily using cutadapt with AAAAAAAAAA(...) or/and TTTTTTTTTT(...) as adaptors.
 
@@ -105,7 +105,7 @@ Genome assemblies are continuously updated with new information, particularly fo
 
 It is therefore fundamental to register the version of the genome used, as well as from where (and when) it was obtained. When performing analysis using resources like Galaxy, genomes are often already integrated in those resources. You should always note as much information as possible about the genome you're using.
 
-Finally, another alternative is to use cDNA sequences directly as a reference. This is sometimes the only alternative, when full good quality genomes are not available. The presence of multiple alternative transcripts can make the alignment more difficult, but more recent approaches actually take advantage of this information, as we will see later. We can also select collections of cDNAs that are relevant for our analysis (eg. focusing on protein-coding cDNAs, and/or choosing a single representative cDNA per gene).
+Finally, another alternative is to use cDNA sequences directly as a reference. This is sometimes the only alternative, when full good quality genomes are not available. The presence of multiple alternative transcripts can make the alignment more difficult, but more recent approaches can actually take this information in consideration. We can also select collections of cDNAs that are relevant for our analysis (eg. focusing on protein-coding cDNAs, and/or choosing a single representative cDNA per gene).
 
 Task: Obtain genomic fasta for Drosophila melanogaster from the Ensembl website. Finally, also download a fasta with cDNA. Take note of the Ensembl version, as well as the version of your genome (in case later you wanto to integrate data that is not from Ensembl). Obtain genomic and cDNA fasta from your species of interest from ENSEMBL.
 
@@ -118,18 +118,17 @@ Methods such as the ones based on the burrows-wheeler transform make some assump
 RNA-Seq, in eukaryotes contain the extra complication of splicing, where your read will be spread through multiple regions of the genome. When using small, single-end reads, this is less of a problem. Nonetheless, it is always a good idea to use an aligner that allows split reads. Tophat (based on bowtie) is a popular splice-aware aligner. It has more recently been superseded by [Hisat](https://ccb.jhu.edu/software/hisat2/index.shtml). Recent updates of bwa also allow splitting of reads.
 
 Finally, another set of more recent approaches that are quickly gaining in popularity.
-Sailfish/Salmon are
+[Salmon](https://combine-lab.github.io/salmon/) that provides transcript-level estimates of gene expression. 
 
 ## LO 5.3 - Run an alignment: the SAM/BAM alignment format
 
 Run hisat2 / bwa mem in an example dataset
 
-To store millions of alignments, researchers also had to develop new, more practical formats. The Sequence Alignment/Map (SAM) format 11 is a tabular text file format, where each line contains information for one alignment. SAM files are most often compressed as BAM (Binary sAM) files, to reduce space and allow direct access to alignments in any arbitrary region of the genome. Several tools only work with BAM files.
+To store millions of alignments, researchers also had to develop new, more practical formats. The [Sequence Alignment/Map (SAM) format](https://samtools.github.io/hts-specs/SAMv1.pdf) is a tabular text file format, where each line contains information for one alignment. SAM files are most often compressed as BAM (Binary sAM) files, to reduce space and allow direct access to alignments in any arbitrary region of the genome. Several tools only work with BAM files.
 
 
-			Question: what is the SAM format; what is the BAM format?
+Run a Salmon alignment: no SAM/BAM is generated.
 
-		Also briefly look at SAMv1.pdf describing the format to understand the information in the sam files.
 
 	
 # Learning Outcome 6: Assess the general quality of the alignments and detect possible problems
