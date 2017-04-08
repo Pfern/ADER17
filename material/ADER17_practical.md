@@ -221,7 +221,9 @@ In the large mammalian genomes, it is common for gene models to overlap.
 
 
 
-			Question: what parameters we need to consider when counting?
+Question: what parameters we need to consider when counting?
+
+[mapping quality: namely, do we include or not the multiple alignments; stranded or not!]
 
 ## LO 7.3 - Use tools such as htseq-counts to generate table of gene counts
 
