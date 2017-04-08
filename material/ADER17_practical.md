@@ -159,38 +159,33 @@ TASK: Run IGV and look at the provided sample BAM file with alignments [ND: prov
 QUESTION: Would you be able to detect all of what you saw here using microarrays? If not, what and why?
 [ND: The reads overlapping introns; variants etc...]
 
-TASK: Download the BAM files you generated for your complete dataset, and load it in IGV. Don't forget to also download the companion bai index files. Also, don't forget you first need to load an appropriate genome of reference and gene annotation (GTF file). 
+TASK: Download the BAM files you generated for your complete dataset, and load it in IGV. Don't forget to also download the companion bai index files. Also, don't forget you first need to load an appropriate genome of reference and gene annotation (GTF file) that you should have downloaded previously. 
 
 [ND: Check if you can visualize with Galaxy - either directly, or see IGV link??]
 
 
 ## LO 6.2 - Use tools such as RSeQC and Qualimap to assess quality of alignments
-			Interpret general alignment statistics such as percentage of aligned reads
-			Check the reports to assess RNA integrity and diversity
+
+After generating alignments and obtaining a SAM/BAM file, how do I know this step went well? In fact, there are potential issues that we can only detect after we try to align against the reference genome. The same way FastQC generates reports of fastq files to assess quality of raw data, there are programs that generate global reports on the quality of alignments. One popular tool for this is [qualimap](http://qualimap.bioinfo.cipf.es/). 
+
+One important general measure is how many (out of all reads) were properly aligned against the reference genome. In the case of bacterial sequencing one would expect >95% successful alignment, but when sequencing a mamallian genome (with many repetitive areas) it may be normal to have as low as 70-80% alignment success. RNA-Seq sequences regions that are usually well preserved, and thus alignment rates should be usually high. 
+
+There can be several reasons why the alignment rate is low: the reads may not have been properly quality filtered or may contain artefactual sequence (such as adaptors and polyA tails); there may be contaminations; an inappropriate reference genome may have been used for alignment. The first of these reasons should have been detected before alingment, by looking at the raw data using FastQC and using the appropriate tools. It can be hard to find out if there were contaminations, unless we have an idea of the possible contaminants. An obvious one is Human, which we can check if we obtain a significant number of alignments against it. Finally, if we didn't use the proper genome, but there is no closer genome available, then there is not much that can be done, except perhaps trying to change parameters in the alignment software to allow for more mismatches (although this may cause biases and an increase in wrong alignments).
+
+Another measure that can be used is the percentage of reads with duplicates (aligning exactly to the same place in the genome). Usually, duplication levels higher than 20% are not a good sign (they're a sign of low input DNA and PCR artifacts) but again, depends on what you are sequencing and how much. In RNA-Seq it is common to have a small set of genes highly expressed, leading to the presence of duplicates. The histogram of number of duplicates per read will often look bimodal, with most reads being unique and a small subset highly present (mostly from highly expressed genes). Unfortunately it is hard to distinguish PCR artifacts from highly expressed genes. When looking in IGV, PCR artifacts can be easily detected by an uneven coverage of the gene. To be safer, one can remove duplicates, but this is not usually done, since a lot of valid information may be lost.
+
+QUESTION: Why duplication rates are frequently high in RNA-Seq? 
+
+Task: In Galaxy, check the percentage of aligned reads in the alignments generated previously with sample datasets. Compare paired-end versus single-end, before and after trimming. Also compare the effect of changing the genome of reference.
+
+Finally, there are reports specific for RNA-Seq which depend on gene annotation. One report indicates how well the genes are covered by sequence, which provides a good indication of RNA integrity. Finally, one can also check how well the alignments match the known annotation. The presence of a lot of alignments outside annotated genes can mean several things: annotation is not correct (eg. if you're working with a non-model organism); there can be DNA contamination; presence of immature RNA. Qualimap and [RSeqC](http://rseqc.sourceforge.net/) provide a set of tools to produce RNA-Seq specific reports. 
+
+Task: Produce Qualimap (outside Galaxy) and RSseQC (in Galaxy) reports for the alignments you generated with your complete datasets. Some RSeqQC reports may take some time, so take care to run only one at a time during the day in Galaxy (similar to the alignments).
 
 [Show the graphs of RSeqQC and Qualimap with the real data? - bring BAM files, do NOT put the whole thing in git]
-
-Task: Try running alignment in paired-end mode, and in single-end mode. Compare before and after trimming and adaptor removal. Also try changing the genome of reference (from the ones already available).
-
-After generating alignments and obtaining a SAM/BAM file, how do I know this step went well? The
-same way as FastQC generates reports of fastq files to assess quality of raw data, there are programs
-that generate global reports on the quality of alignments. One popular tool for this is qualimap 12 .
-
-The way you check if the alignment step went well depends on your application. Usually,
-duplication levels higher than 20% are not a good sign (they're a sign of low input DNA and PCR
-artifacts) but again, depends on what you are sequencing and how much. Similarly, in the case of
-bacterial sequencing or targeted (eg. exonic) sequencing you expect >95% successful alignment, but if
-sequencing a full mamallian genome (with many duplicated areas) it may be normal to have as low as
-70-80% alignment success. If you have to check the expected “quality” for your application.
-
-
-Why duplication rates are frequently high in RNA-Seq? 
-
-
-[lot's of sequence outside annotation, can mean several things: annotation is not correct (eg. if you're working with a non-model organism); DNA contamination (which, if ); immature RNA;]
-
-[Show example plots of some IGC datasets, without showing the actual data!]
-
+[ND: Show rseQC graph of Chandra to show difference in potential RNA degradation; also try data from Guilgur]
+[ND: Show Gene Coverage difference between SmartSeq and the other method that only has in 3']
+[ND: Show example plots of some IGC datasets, without showing the actual data!]
 
 # Learning Outcome 7: Generate tables of counts using the alignment and a reference gene annotation
 
