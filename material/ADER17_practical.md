@@ -144,70 +144,27 @@ Salmon directly estimates transcript expression (not alignments), and thus we wi
 
 ## LO 6.1 - Visualizing alignments in IGV for single genes
 
+To visualize the alignments along the reference genome one can use software such as [IGV](http://software.broadinstitute.org/software/igv/) or [Tablet](https://ics.hutton.ac.uk/tablet/), which work in most for the most common operating systems. To avoid loading all alignments simultaneously in memory, and to be able to quickly search for region-specific alignments, this software uses the BAM format. 
 
-After finishing your analysis, even if you did all the quality checks, and obtained a list of variants, you
-may want to manually inspect your alignments (you should always manually inspect the regions that
-are most important for your analysis). For this, there is simple desktop software that you can use to
-visualize your data, such as IGV 17 or Tablet 18 .
-TASK: Run IGV and look at sample BAM files with alignments
-First you'll need a reference genome:
-
-Inspect the pairing information (need to set option on IGV to look at it)
-
-NOTE: next to .bam files there is a .bai file with the same name. The .bai file is called the BAM index
-file and it is used to enable tools such as IGV to navigate the alignments much faster (imagine if you
-needed to go through millions of alignments every time you moved around in the genome).
-
-[Note that you need to download the .bai file, as well as the bam]
-
-[Check if you can visualize with Galaxy - either directly, or see IGV link??]
-
-
-
-
-
-TASK: Look at a RNA-Seq sample in IGV:
+TASK: Run IGV and look at the provided sample BAM file with alignments [ND: provided from lguilgur et al - same as for the NGS part]. 
 - In IGV, load the Drosophila genome as reference; load gtf file annotation and alignment files (*.bam)
-- Look at position: 3L:15033260-15038204 (may need to change scale)
-- Look at position: X:20564838-20570348 (may need to change scale to 800 to see)
-- Look at position X:5793758-5799858 (compare coverage with previous examples)
-Notice the 3' bias, particularly in one of the replicates 
+[ND: mention that gtf can also be indexed... maybe provide it already indexed??]
+[ND: mention that gtf can also be indexed... maybe provide it already indexed??]
+[ND: exemplify UCSC and ENSEMBL chr differences]. 
+- Look at position: 3L:15033260-15038204
+- Look at position: X:20564838-20570348
+- Look at position X:5793758-5799858
+[ND: compare coverage; notice the 3' bias, particularly in one of the replicates]
+
+QUESTION: Would you be able to detect all of what you saw here using microarrays? If not, what and why?
+[ND: The reads overlapping introns; variants etc...]
+
+TASK: Download the BAM files you generated for your complete dataset, and load it in IGV. Don't forget to also download the companion bai index files. Also, don't forget you first need to load an appropriate genome of reference and gene annotation (GTF file). 
+
+[ND: Check if you can visualize with Galaxy - either directly, or see IGV link??]
 
 
-
-
-
-Would you be able to detect all of what you saw here using microarrays?
-
-
-NOTE: Similarly to microarrays, RNA-Seq can be used to detect differential expression. Nonetheless,
-RNA sequencing suffer from multiple still poorly understood biases, and the methods to deal with them
-are not as mature as the methods handling microarrays. Moreover, to obtain better signal-to-noise you
-need more sequencing which makes it more expensive. Thus, for “simple” experiments, in organisms
-with good quality microarrays available, these may still be more cost-effective and easier to use.
-Usually, to perform differential expression analysis, one needs to count how many times a different
-transcript/gene is read. A popular tool to generate these counts from a SAM/BAM file is htseq-count 25 .
-TASK: Open example_RNA_counts.htseq.tab in the text editor or in a spreadsheet
-How would you about checking which genes are differential expressed?
-From these count files several methods can be then used to perform statistical tests. Given that
-sequencing data is based on discrete counts, most of the popular methods are based on derivations of
-the binomial distribution. Similarly to microarrays, there are many available tools to perform these
-analysis using the R language (such as edger and DESeq).
-TASK: Open example_RNA_counts.edger_analysis.tab and Dmelano_rnaseq.bayseq_diff.txt with a
-text editor or in a spreadsheet. How would you go about selecting genes of interest? What would you
-do with this list? Is statistically significant the same as biologically significant?
-NOTE: Several experiments can have different numbers of reads sequenced (for the same amount of
-RNA). Moreover, gene length also influences the number of counts. One common normalization is to
-transform counts into FPKM (fragments per kb per million aligned reads). Nonetheless this measure
-needs to be used with caution, particularly when comparing different loci.
-
-
-
-
-[Note that you can see variants also with RNA-Seq, if you're interested]
-
-
-		LO 6.2 - Use tools such as RSeQC and Qualimap to assess quality of alignments
+## LO 6.2 - Use tools such as RSeQC and Qualimap to assess quality of alignments
 			Interpret general alignment statistics such as percentage of aligned reads
 			Check the reports to assess RNA integrity and diversity
 
@@ -247,6 +204,23 @@ Why duplication rates are frequently high in RNA-Seq?
 			Question: what parameters we need to consider when counting?
 
 ## LO 7.3 - Use tools such as htseq-counts to generate table of gene counts
+
+Usually, to perform differential expression analysis, one needs to count how many times a different
+transcript/gene is read. A popular tool to generate these counts from a SAM/BAM file is htseq-count 25 .
+TASK: Open example_RNA_counts.htseq.tab in the text editor or in a spreadsheet
+How would you about checking which genes are differential expressed?
+From these count files several methods can be then used to perform statistical tests. Given that
+sequencing data is based on discrete counts, most of the popular methods are based on derivations of
+the binomial distribution. Similarly to microarrays, there are many available tools to perform these
+analysis using the R language (such as edger and DESeq).
+
+TASK: Open example_RNA_counts.edger_analysis.tab and Dmelano_rnaseq.bayseq_diff.txt with a
+text editor or in a spreadsheet. How would you go about selecting genes of interest? What would you
+do with this list? Is statistically significant the same as biologically significant?
+NOTE: Several experiments can have different numbers of reads sequenced (for the same amount of
+RNA). Moreover, gene length also influences the number of counts. One common normalization is to
+transform counts into FPKM (fragments per kb per million aligned reads). Nonetheless this measure
+needs to be used with caution, particularly when comparing different loci.
 
 
 Run a Salmon alignment: no SAM/BAM is generated.
