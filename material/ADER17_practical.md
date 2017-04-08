@@ -153,17 +153,15 @@ Salmon directly estimates transcript expression (not alignments), and thus we wi
 ## LO 6.1 - What is a reference gene annotation, versioning and where to obtain
 
 To estimate gene expression, we need to define the genes by identifying their position and structure in the genome. This information is stored 
-in a hierarchical fashion (genes, each gene's transcripts, each transcript's exons, and so on...) in [Generic Feature Format (GFF) files](http://gmod.org/wiki/GFF3)
+in a hierarchical fashion (the genes, their transcripts, each transcript's exons, and so on...) in formats such as the [Generic Feature Format (GFF) files](http://gmod.org/wiki/GFF3). These consist basically of tabular text files with positions of genes (and their components) in the genome (for a specific genome version), as well as other information about the gene such as its name. Another common format used for annotations is the [BED format](http://genome.ucsc.edu/FAQ/FAQformat.html#format1). 
 
-Gene models are . The GTF format 
+Each gene annotation is deeply associated to one given version of the genome (because it contains positions in that genome), but the same genome version may (and usually has) several gene annotation versions. The same way one should keep in detail the version of the genome, we should also take note of the version of the gene annotation being used, and from where and when we obtained it.
 
-Non-model organisms that are less intensively studied may suffer from having 
+Gene annotations are usually complex to create, particularly for large mammalian genomes, and are a permanent work in progress (even more than the genome). Annotation of the Human genes is the work of several large groups of researchers. Other model organisms (such as the mouse) also have dedicated teams to curate their genes.  Non-model organisms that are less intensively studied may suffer from having less well characterized annotations, and frequently derived from other better studied organisms. 
 
-One GFF/GTF is deeply associated to one given version of the genome (because it basically stores positions in that genome), but the same genome version may (and usually has) several gene annotation versions. The same way one should keep in detail the version of the genome, we should also take note of the version of the gene annotation, and from where and when we obtained it.
-
-
-		Question: what is the GFF/GTF format?
-Task: Obtain genome GTF from Ensembl for the organism relevant for .  Use it in IGV to l
+The same way ENSEMBL is a good source for the genome sequence, it is also a good source to obtain gene annotations. ENSEMBL even defined a specific variant of the GFF format ([GTF](http://www.ensembl.org/info/website/upload/gff.html)) which is commonly accepted by most applications. 
+ 
+Task: Obtain the latest Drosophila melanogaster GTF from Ensembl, as well as the GTF for the organism relevant for your complete dataset.
 
 
 ## LO 6.2 - Visualizing alignments in IGV for single genes
