@@ -108,30 +108,42 @@ Task: Obtain genomic fasta for Drosophila melanogaster from the Ensembl website.
 
 ## LO 5.2 - Alignment software: hisat; bwa; salmon
 
-To be able to align millions of short reads to a (sometimes large) reference genome, novel, more efficient, alignment methods had to be developed. The most popular are based on the [burrows-wheeler transform](https://en.wikipedia.org/wiki/Burrows%E2%80%93Wheeler_transform), of which [bwa](http://bio-bwa.sourceforge.net/) and [bowtie](http://bowtie-bio.sourceforge.net/index.shtml) are examples. They enable alignment of millions of reads in a few minutes, even in a common laptop (although aligning against larger genomes such as Human may require more computational resources). 
+To be able to align millions of short reads to a (sometimes large) reference genome, novel, more efficient, alignment methods had to be developed. The most popular are based on the [burrows-wheeler transform](https://en.wikipedia.org/wiki/Burrows%E2%80%93Wheeler_transform), of which [bwa](http://bio-bwa.sourceforge.net/) and [bowtie](http://bowtie-bio.sourceforge.net/index.shtml) are examples. They enable alignment of millions of reads in a few minutes, even in a common laptop.  
+
+Nonetheless, these methods rely on building large data structures that must stay entirely in memory, and thus aligning against larger genomes such as Human may require more computational resources than available in more modest laptops. Moreover, most software implementations of these methods, although open-source and freely available, are usually only available for use within a linux-based environment. In any case, given the large size of the raw data and the computational requirements for the alignment, it is most likely that at least the alignment step will have to be run in a dedicated computational server. Services such as Galaxy or Chipster hide the computational infrastructure from you and provide simple to use interfaces that allow you to run analysis that would otherwise be hard to perform on your own computer.
 
 Methods based on the burrows-wheeler transform make assumptions to speed up the alignment process. Namely, they require the reference genome to be very similar to your sequenced DNA (less than 2-5% differences). For example, mouse data will align poorly to the human genome, although in the case of RNA-Seq this is less problematic since genes tend to be much better conserved than the rest of the genome (you would probably still bias your results to better conserved genes). Moreover, these fast alignment algorithms are not optimal, and therefore sometimes make some mistakes, although they work quite well most of the time. 
 
-Eukaryotes contain the extra complication of splicing, where your read will be spread through multiple regions of the genome. When using small, single-end reads, this is less of a problem, since it is less likely that your reads will overlap significantly with a splice site. Nonetheless, it is a good idea to use an aligner that allows split reads. [Hisat](https://ccb.jhu.edu/software/hisat2/index.shtml) (based on bowtie) is one such splice-aware aligner (it is a of the better known Tophat aligner). It still uses the same approach as before, but with extensions to allow splitting of reads. Recent updates of bwa (bwa mem) also allows splitting of reads, and can be used for RNA-Seq data .
+Eukaryotes contain the extra complication of splicing, where your read will be spread through multiple regions of the genome (usually, different exons of the same transcript). When using small, single-end reads, this is less of a problem, since it is less likely that your reads will overlap significantly with a splice site. Nonetheless, it is a good idea to use an aligner that allows split reads. [Hisat](https://ccb.jhu.edu/software/hisat2/index.shtml) (based on bowtie) is one such splice-aware aligner (it is a of the better known Tophat aligner). It still uses the same approach as before, but with extensions to allow splitting of reads. Recent updates of bwa (bwa mem) also allows splitting of reads, and can be used for RNA-Seq data .
 
 Finally, another set of more recent approaches quickly gaining in popularity align directly against the transcriptome, without the need for a reference genome. [Salmon](https://combine-lab.github.io/salmon/) provides transcript-level estimates of gene expression. These methods are very fast (mostly because they only align against the transcriptome), and use more elaborate statistical methods to handle the presence of different alternative splice forms that difficult the attribution of a read to a transcript. Some of these methods, such as salmon, also take explicitly in consideration bias related to differences in transcript length and nucleotide composition. 
 
 ## LO 5.3 - Run an alignment: the SAM/BAM alignment format
 
-Run hisat2 / bwa mem in an example dataset
+As we mentioned before, aligners for NGS data depend on large data structures for their efficiency. These structures (like the blast databases) are built from the fasta file containing the sequence of the reference genome. This process is relatively slow and computationally intensive, although it is only necessary to do it once for every reference genome. Therefore, before aligning your reads, it is necessary to do an indexing step on the genome sequence that will be used for alignment. If using the tools on the command line, one needs to explicitly perform this step. Using services such as Galaxy, this step is hidden from the user. 
 
-To store millions of alignments, researchers also had to develop new, more practical formats. The [Sequence Alignment/Map (SAM) format](https://samtools.github.io/hts-specs/SAMv1.pdf) is a tabular text file format, where each line contains information for one alignment. SAM files are most often compressed as BAM (Binary sAM) files, to reduce space and allow direct access to alignments in any arbitrary region of the genome. Several tools only work with BAM files.
+When performing the alignment in Galaxy, you usually have two options: either you pass the tool a fasta with the reference genome, or you select an available genome. When using an available genome, the indexing step was already performed, while if you provide your own fasta of the genome, and indexing step will have to be performed before the alignment step. If your genome of interest is relatively large (roughly >100Mb), it is more efficient to have it pre-built, particularly if you're reusing it often. For this, you will need to ask the persons managing the service you're using.
 
-Salmon generates directly . We will come back to these methods further ahead.  
-Run a Salmon alignment: no SAM/BAM is generated.
+Task: In Galaxy, run Hisat2 on one of the paired-end example files (in single-end mode) against the Drosophila genome that should be prebuilt in your Galaxy instance. Now run the same, but using as input the fasta for the Drosophila genome that you downloaded previously instead of the prebuilt one already available. Compare the differences in the time it takes. 
 
+Researchers felt the need to develop new, more practical formats to store millions of alignments being generated by these aligners. The [Sequence Alignment/Map (SAM) format](https://samtools.github.io/hts-specs/SAMv1.pdf) is a tabular text file format, where each line contains information for one alignment. SAM files are most often compressed as BAM (Binary SAM) files, to reduce space and allow direct access to alignments in any arbitrary region of the genome. Several tools only work with BAM files. Some aligners still produce only SAM files, which may need to be converted to BAM [ND: ADD some tool in Galaxy to make the conversion... also check that neither Hisat2 or the new bwa produce sam].
 
-Task: Run 
+Task: Upload the example SAM file [ND: from the alignment of the available fastq]. Inspect it. Convert to BAM [ND: May need the genome].
 
-	
+Most genomes (particularly mamallian genomes) contain areas of low complexity, composed mostly of repetitive sequences. In the case of short reads, sometimes these align to multiple regions in the genome equally well, making it impossible to know where the fragment came from. Longer reads are needed to overcome these difficulties, or in the absence of these, paired-end data can also be used. Some aligners (such as hisat or bwa) can use information from paired reads to help disambiguate some alignments. Information on paired reads is also added to the SAM/BAM file when proper aligners are used.
+
+Task: Upload the example SAM file with paired-end data. Inspect it [compare paired-end and single-end?].
+
+Task: In Galaxy, run hisat2 and bwa mem with the example paired-end data.
+
+Task: In Galaxy, run Hisat2 on the complete dataset. Use a genome that is already prebuilt, to save time. During the day, so that you can work on other things in Galaxy during the course, run one alignment at a time. If you still need to run alignments at the end of the day, then you can launch all in a queue to be run overnight.
+
+Salmon directly estimates transcript expression (not alignments), and thus we will come back to it later on.
+
 # Learning Outcome 6: Assess the general quality of the alignments and detect possible problems
 
-		LO 6.1 - Visualizing alignments in IGV for single genes
+## LO 6.1 - Visualizing alignments in IGV for single genes
+
 
 After finishing your analysis, even if you did all the quality checks, and obtained a list of variants, you
 may want to manually inspect your alignments (you should always manually inspect the regions that
@@ -150,16 +162,10 @@ needed to go through millions of alignments every time you moved around in the g
 
 [Check if you can visualize with Galaxy - either directly, or see IGV link??]
 
-NOTE: Most genomes (particularly mamallian genomes) contain areas of low complexity, composed
-mostly of repetitive sequences. In the case of short reads, sometimes these align to multiple regions in
-the genome equally well, making it impossible to know where the fragment came from. Longer reads
-are needed to overcome these difficulties, or in the absence of these, paired-end data can also be used.
-Some aligners (such as bwa) can use information on paired reads to help disambiguate some
-alignments. Information on paired reads is also added to the SAM file when proper aligners are used.
 
 
-The data processing is similar to genomic resequencing. For eukaryotes, mRNA is usually spliced, and
-thus we need to use splice-aware aligners (eg. Tophat 24 ) to map short reads to a reference genome.
+
+
 TASK: Look at a RNA-Seq sample in IGV:
 - In IGV, load the Drosophila genome as reference; load gtf file annotation and alignment files (*.bam)
 - Look at position: 3L:15033260-15038204 (may need to change scale)
@@ -167,7 +173,9 @@ TASK: Look at a RNA-Seq sample in IGV:
 - Look at position X:5793758-5799858 (compare coverage with previous examples)
 Notice the 3' bias, particularly in one of the replicates 
 
-[Show the graphs of RSeqQC and Qualimap with the real data? - bring BAM files, do NOT put the whole thing in git]
+
+
+
 
 Would you be able to detect all of what you saw here using microarrays?
 
@@ -203,6 +211,10 @@ needs to be used with caution, particularly when comparing different loci.
 			Interpret general alignment statistics such as percentage of aligned reads
 			Check the reports to assess RNA integrity and diversity
 
+[Show the graphs of RSeqQC and Qualimap with the real data? - bring BAM files, do NOT put the whole thing in git]
+
+Task: Try running alignment in paired-end mode, and in single-end mode. Compare before and after trimming and adaptor removal. Also try changing the genome of reference (from the ones already available).
+
 After generating alignments and obtaining a SAM/BAM file, how do I know this step went well? The
 same way as FastQC generates reports of fastq files to assess quality of raw data, there are programs
 that generate global reports on the quality of alignments. One popular tool for this is qualimap 12 .
@@ -235,6 +247,9 @@ Why duplication rates are frequently high in RNA-Seq?
 			Question: what parameters we need to consider when counting?
 
 ## LO 7.3 - Use tools such as htseq-counts to generate table of gene counts
+
+
+Run a Salmon alignment: no SAM/BAM is generated.
 
 
 # Learning Outcome 8: Generate lists of differentially expressed genes, at least for a simple pairwise comparison
