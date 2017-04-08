@@ -1,3 +1,11 @@
+# Learning Outcome 1:
+
+[ND: Add Just some notes for completeness...]
+
+# Learning Outcome 2:
+
+[ND: Add Just some notes for completeness...]
+
 # Learning Outcome 3: Assess the general quality of the raw data from the sequencing facility
 
 ## LO 3.1 - Interpret what are fastq files and what is their content
@@ -142,29 +150,45 @@ Salmon directly estimates transcript expression (not alignments), and thus we wi
 
 # Learning Outcome 6: Assess the general quality of the alignments and detect possible problems
 
-## LO 6.1 - Visualizing alignments in IGV for single genes
+## LO 6.1 - What is a reference gene annotation, versioning and where to obtain
+
+To estimate gene expression, we need to define the genes by identifying their position and structure in the genome. This information is stored 
+in a hierarchical fashion (genes, each gene's transcripts, each transcript's exons, and so on...) in [Generic Feature Format (GFF) files](http://gmod.org/wiki/GFF3)
+
+Gene models are . The GTF format 
+
+Non-model organisms that are less intensively studied may suffer from having 
+
+One GFF/GTF is deeply associated to one given version of the genome (because it basically stores positions in that genome), but the same genome version may (and usually has) several gene annotation versions. The same way one should keep in detail the version of the genome, we should also take note of the version of the gene annotation, and from where and when we obtained it.
+
+
+		Question: what is the GFF/GTF format?
+Task: Obtain genome GTF from Ensembl for the organism relevant for .  Use it in IGV to l
+
+
+## LO 6.2 - Visualizing alignments in IGV for single genes
 
 To visualize the alignments along the reference genome one can use software such as [IGV](http://software.broadinstitute.org/software/igv/) or [Tablet](https://ics.hutton.ac.uk/tablet/), which work in most for the most common operating systems. To avoid loading all alignments simultaneously in memory, and to be able to quickly search for region-specific alignments, this software uses the BAM format. 
 
 TASK: Run IGV and look at the provided sample BAM file with alignments [ND: provided from lguilgur et al - same as for the NGS part]. 
-- In IGV, load the Drosophila genome as reference; load gtf file annotation and alignment files (*.bam)
+- In IGV, load the Drosophila genome as reference (fasta); load the annotation file (gtf) and alignment files (*.bam)
 [ND: mention that gtf can also be indexed... maybe provide it already indexed??]
 [ND: mention that gtf can also be indexed... maybe provide it already indexed??]
 [ND: exemplify UCSC and ENSEMBL chr differences]. 
 - Look at position: 3L:15033260-15038204
 - Look at position: X:20564838-20570348
 - Look at position X:5793758-5799858
-[ND: compare coverage; notice the 3' bias, particularly in one of the replicates]
+[ND: compare coverage; notice the 3' bias particularly in one of the replicates]
 
 QUESTION: Would you be able to detect all of what you saw here using microarrays? If not, what and why?
 [ND: The reads overlapping introns; variants etc...]
 
-TASK: Download the BAM files you generated for your complete dataset, and load it in IGV. Don't forget to also download the companion bai index files. Also, don't forget you first need to load an appropriate genome of reference and gene annotation (GTF file) that you should have downloaded previously. 
+TASK: Download the BAM files you generated for your complete dataset, and load it in IGV. Don't forget to also download the companion bai index files. Also, don't forget you first need to load an appropriate genome of reference and gene annotation (GTF file) that you should have downloaded previously. [ND: I only mention GTF files later....]
 
 [ND: Check if you can visualize with Galaxy - either directly, or see IGV link??]
 
 
-## LO 6.2 - Use tools such as RSeQC and Qualimap to assess quality of alignments
+## LO 6.3 - Use tools such as RSeQC and Qualimap to assess quality of alignments
 
 After generating alignments and obtaining a SAM/BAM file, how do I know this step went well? In fact, there are potential issues that we can only detect after we try to align against the reference genome. The same way FastQC generates reports of fastq files to assess quality of raw data, there are programs that generate global reports on the quality of alignments. One popular tool for this is [qualimap](http://qualimap.bioinfo.cipf.es/). 
 
@@ -182,19 +206,22 @@ Finally, there are reports specific for RNA-Seq which depend on gene annotation.
 
 Task: Produce Qualimap (outside Galaxy) and RSseQC (in Galaxy) reports for the alignments you generated with your complete datasets. Some RSeqQC reports may take some time, so take care to run only one at a time during the day in Galaxy (similar to the alignments).
 
-[Show the graphs of RSeqQC and Qualimap with the real data? - bring BAM files, do NOT put the whole thing in git]
-[ND: Show rseQC graph of Chandra to show difference in potential RNA degradation; also try data from Guilgur]
+[ND: RSeQC needs Bed files: either downloaded from UCSC or transformed from GTF]
+
+[ND: Show the graphs of RSeqQC and Qualimap with the real data? - bring BAM files, do NOT put the whole thing in git]
+[ND: Show RseQC graph of Chandra to show difference in potential RNA degradation; also try data from Guilgur]
 [ND: Show Gene Coverage difference between SmartSeq and the other method that only has in 3']
 [ND: Show example plots of some IGC datasets, without showing the actual data!]
 
 # Learning Outcome 7: Generate tables of counts using the alignment and a reference gene annotation
 
-## LO 7.1 - What is a reference gene annotation, versioning and where to obtain
-	
-		Question: what is the GFF/GTF format?
-		Obtain genome GTF from Ensembl
-
 ## LO 7.2 - The process of generating gene counts from genome aligments
+
+The presence of DNA contaminant and immature RNA may influence counts.
+
+In the large mammalian genomes, it is common for gene models to overlap. 
+
+
 
 			Question: what parameters we need to consider when counting?
 
@@ -217,8 +244,11 @@ RNA). Moreover, gene length also influences the number of counts. One common nor
 transform counts into FPKM (fragments per kb per million aligned reads). Nonetheless this measure
 needs to be used with caution, particularly when comparing different loci.
 
+Task: Use qualimap to generate gene counts. Use 
 
 Run a Salmon alignment: no SAM/BAM is generated.
+
+[ND: mention SeqMonk?]
 
 
 # Learning Outcome 8: Generate lists of differentially expressed genes, at least for a simple pairwise comparison

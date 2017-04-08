@@ -97,22 +97,22 @@ Participants are encouraged to bring their own data and try some of the concepts
 	
 	LO 6 - Assess the general quality of the alignments and detect possible problems
 
-		LO 6.1 - Visualizing alignments in IGV for single genes
+		LO 6.1 - What is a reference gene annotation, versioning and where to obtain
+			Question: what is the GFF/GTF format?
+			Obtain genome GTF from Ensembl
+			
+		LO 6.2 - Visualizing alignments in IGV for single genes
 
-		LO 6.2 - Use tools such as RSeQC and Qualimap to assess quality of alignments
+		LO 6.3 - Use tools such as RSeQC and Qualimap to assess quality of alignments
 			Interpret general alignment statistics such as percentage of aligned reads
 			Check the reports to assess RNA integrity and diversity
 
 	LO 7 - Generate tables of counts using the alignment and a reference gene annotation
 
-		LO 7.1 - What is a reference gene annotation, versioning and where to obtain
-			Question: what is the GFF/GTF format?
-			Obtain genome GTF from Ensembl
-
-		LO 7.2 - The process of generating gene counts from genome aligments
+		LO 7.1 - The process of generating gene counts from genome aligments
 			Question: what parameters we need to consider when counting?
 
-		LO 7.3 - Use tools such as htseq-counts to generate table of gene counts
+		LO 7.2 - Use tools such as htseq-counts to generate table of gene counts
 
 	LO 8 - Generate lists of differentially expressed genes, at least for a simple pairwise comparison
 
