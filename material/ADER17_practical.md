@@ -106,16 +106,15 @@ Finally, another alternative is to use cDNA sequences directly as a reference. T
 
 Task: Obtain genomic fasta for Drosophila melanogaster from the Ensembl website. Finally, also download a fasta with cDNA. Take note of the Ensembl version, as well as the version of your genome (in case later you wano to integrate data that is not from Ensembl). Obtain genomic and cDNA fasta from ENSEMBL for the species relevant for your complete dataset.
 
-## LO 5.2 - Alignment software: tophat2/hisat2; bwa; sailfish/salmon
+## LO 5.2 - Alignment software: hisat; bwa; salmon
 
-To be able to align millions of short reads to a (sometimes large) reference genome, novel, more efficient, alignment methods had to be developed. The most popular method is based on the [burrows-wheeler transform](https://en.wikipedia.org/wiki/Burrows%E2%80%93Wheeler_transform) and use of efficient data structures, of which [bwa](http://bio-bwa.sourceforge.net/) and [bowtie](http://bowtie-bio.sourceforge.net/index.shtml) are examples. They enable alignment of millions of reads in a few minutes, even in a common laptop. 
+To be able to align millions of short reads to a (sometimes large) reference genome, novel, more efficient, alignment methods had to be developed. The most popular are based on the [burrows-wheeler transform](https://en.wikipedia.org/wiki/Burrows%E2%80%93Wheeler_transform), of which [bwa](http://bio-bwa.sourceforge.net/) and [bowtie](http://bowtie-bio.sourceforge.net/index.shtml) are examples. They enable alignment of millions of reads in a few minutes, even in a common laptop (although aligning against larger genomes such as Human may require more computational resources). 
 
-Methods such as the ones based on the burrows-wheeler transform make some assumptions to speed up the alignment process. Namely, they require the reference genome to be very similar to your sequenced DNA (less than 2-5% differences). For example, you probably cannot align mouse data to the human genome, although in the case of RNA-Seq this is less problematic since genes tend to be much better conserved than the rest of the genome (you would probably still bias your results to better conserved genes). Moreover, they are not optimal, and therefore sometimes make some mistakes, although they work quite well most of the time. 
+Methods based on the burrows-wheeler transform make assumptions to speed up the alignment process. Namely, they require the reference genome to be very similar to your sequenced DNA (less than 2-5% differences). For example, mouse data will align poorly to the human genome, although in the case of RNA-Seq this is less problematic since genes tend to be much better conserved than the rest of the genome (you would probably still bias your results to better conserved genes). Moreover, these fast alignment algorithms are not optimal, and therefore sometimes make some mistakes, although they work quite well most of the time. 
 
-RNA-Seq, in eukaryotes contain the extra complication of splicing, where your read will be spread through multiple regions of the genome. When using small, single-end reads, this is less of a problem. Nonetheless, it is always a good idea to use an aligner that allows split reads. Tophat (based on bowtie) is a popular splice-aware aligner. It has more recently been superseded by [Hisat](https://ccb.jhu.edu/software/hisat2/index.shtml). Recent updates of bwa also allow splitting of reads.
+Eukaryotes contain the extra complication of splicing, where your read will be spread through multiple regions of the genome. When using small, single-end reads, this is less of a problem, since it is less likely that your reads will overlap significantly with a splice site. Nonetheless, it is a good idea to use an aligner that allows split reads. [Hisat](https://ccb.jhu.edu/software/hisat2/index.shtml) (based on bowtie) is one such splice-aware aligner (it is a of the better known Tophat aligner). It still uses the same approach as before, but with extensions to allow splitting of reads. Recent updates of bwa (bwa mem) also allows splitting of reads, and can be used for RNA-Seq data .
 
-Finally, another set of more recent approaches that are quickly gaining in popularity.
-[Salmon](https://combine-lab.github.io/salmon/) that provides transcript-level estimates of gene expression. 
+Finally, another set of more recent approaches quickly gaining in popularity align directly against the transcriptome, without the need for a reference genome. [Salmon](https://combine-lab.github.io/salmon/) provides transcript-level estimates of gene expression. These methods are very fast (mostly because they only align against the transcriptome), and use more elaborate statistical methods to handle the presence of different alternative splice forms that difficult the attribution of a read to a transcript. Some of these methods, such as salmon, also take explicitly in consideration bias related to differences in transcript length and nucleotide composition. 
 
 ## LO 5.3 - Run an alignment: the SAM/BAM alignment format
 
@@ -123,9 +122,11 @@ Run hisat2 / bwa mem in an example dataset
 
 To store millions of alignments, researchers also had to develop new, more practical formats. The [Sequence Alignment/Map (SAM) format](https://samtools.github.io/hts-specs/SAMv1.pdf) is a tabular text file format, where each line contains information for one alignment. SAM files are most often compressed as BAM (Binary sAM) files, to reduce space and allow direct access to alignments in any arbitrary region of the genome. Several tools only work with BAM files.
 
-
+Salmon generates directly . We will come back to these methods further ahead.  
 Run a Salmon alignment: no SAM/BAM is generated.
 
+
+Task: Run 
 
 	
 # Learning Outcome 6: Assess the general quality of the alignments and detect possible problems
