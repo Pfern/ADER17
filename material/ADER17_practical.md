@@ -218,24 +218,23 @@ Task: Produce Qualimap (outside Galaxy) and RSseQC (in Galaxy) reports for the a
 
 ## LO 7.1 - The process of generating gene counts from genome aligments
 
-To perform differential expression analysis we now need to count, for each sample, how many times a different transcript/gene is read.
+To perform differential expression analysis we need to count, for each sample, how many times a different transcript/gene is read. If we align directly against the transcriptome, we just need to count the number of alignments per gene/transcript. However, if there are many alternative transcripts, aligning will become difficult. One solution may be to use just one representative transcript, or the union of all transcripts to represent the gene, although this also has issues.
 
-. Reads that equally map to multiple genome regions have a low mapping quality. But the way this is handled depends on the aligner. Bwa randomly attributes a read to one of the sites; Hisat obtains all sites (up to a certain given number of k sites).
+What is most often done is to align against the genome, and compare the alignments (SAM/BAM) against the gene annotation (as GTF or BED). We could consider that a read counts to a gene if it overlaps with any part of the gene. In large mammalian genomes, genes can have large introns, and it is not rare that genes overlap with each other. The presence of DNA contaminant and immature RNA may influence counts.
 
-To be as safe as possible, we would remove duplicates to avoid pcr artifacts. Nonetheless, given that duplicates can be frequent in RNA-Seq, usually we do not remove them.
+Thus, it is usually preferable that a read will count for a gene only if it overlaps to at least some part corresponding to a valid mRNA transcribed from that gene. Nonetheless, there are stil 
+
+Note that we also need to
+
+. Reads that equally map to multiple genome regions have a low mapping quality. But the way this is handled depends on the aligner. Bwa randomly attributes a read to one of the sites; Hisat obtains all sites (up to a certain given number of k sites). 
+
+To be as safe as possible, we would remove duplicates to avoid pcr artifacts. Nonetheless, given that duplicates can be frequent in RNA-Seq, usually we do not remove them. Assuming that pcr artifacts occurr randomly, then the same artifact should not occurr in different biological replicates. In any case, for genes that are very important to use, we should always also visually check the alignments using software such as IGV.
 
 If we have strand information, 
 
-If we
-
-
-The presence of DNA contaminant and immature RNA may influence counts.
-
-In the large mammalian genomes, it is common for gene models to overlap. 
-
 Notice that counting is not the same as .
 
-Question: what parameters we need to consider when counting?
+Finally, 
 
 [mapping quality: namely, do we include or not the multiple alignments; stranded or not!]
 
@@ -243,13 +242,10 @@ Question: what parameters we need to consider when counting?
 
 A popular tool to generate these counts from a SAM/BAM file is [htseq-count](http://www-huber.embl.de/HTSeq).
 
-
 TASK: Open example_RNA_counts.htseq.tab in the text editor or in a spreadsheet
 How would you about checking which genes are differential expressed?
 
 [ND: htseq-count, by default, uses strand information... ask them to test these settings]
-
-
 
 Task: Use qualimap to generate gene counts. Use 
 
