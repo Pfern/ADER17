@@ -2,8 +2,11 @@
 
 [ND: Add Just some notes for completeness...]
 
+Differential expression: single-end, short reads, unstranded are enough; should invest in more biological replicates rather than very deep sequencing; 10-40M reads should be enough to capture most "reasonably" expressed genes.
+
 # Learning Outcome 2:
 
+List of RNA-Seq Steps: from the slides...
 [ND: Add Just some notes for completeness...]
 
 # Learning Outcome 3: Assess the general quality of the raw data from the sequencing facility
@@ -213,40 +216,51 @@ Task: Produce Qualimap (outside Galaxy) and RSseQC (in Galaxy) reports for the a
 
 # Learning Outcome 7: Generate tables of counts using the alignment and a reference gene annotation
 
-## LO 7.2 - The process of generating gene counts from genome aligments
+## LO 7.1 - The process of generating gene counts from genome aligments
+
+To perform differential expression analysis we now need to count, for each sample, how many times a different transcript/gene is read.
+
+. Reads that equally map to multiple genome regions have a low mapping quality. But the way this is handled depends on the aligner. Bwa randomly attributes a read to one of the sites; Hisat obtains all sites (up to a certain given number of k sites).
+
+To be as safe as possible, we would remove duplicates to avoid pcr artifacts. Nonetheless, given that duplicates can be frequent in RNA-Seq, usually we do not remove them.
+
+If we have strand information, 
+
+If we
+
 
 The presence of DNA contaminant and immature RNA may influence counts.
 
 In the large mammalian genomes, it is common for gene models to overlap. 
 
-
+Notice that counting is not the same as .
 
 Question: what parameters we need to consider when counting?
 
 [mapping quality: namely, do we include or not the multiple alignments; stranded or not!]
 
-## LO 7.3 - Use tools such as htseq-counts to generate table of gene counts
+## LO 7.2 - Use tools such as htseq-counts to generate table of gene counts
 
-Usually, to perform differential expression analysis, one needs to count how many times a different
-transcript/gene is read. A popular tool to generate these counts from a SAM/BAM file is htseq-count 25 .
+A popular tool to generate these counts from a SAM/BAM file is [htseq-count](http://www-huber.embl.de/HTSeq).
+
+
 TASK: Open example_RNA_counts.htseq.tab in the text editor or in a spreadsheet
 How would you about checking which genes are differential expressed?
-From these count files several methods can be then used to perform statistical tests. Given that
-sequencing data is based on discrete counts, most of the popular methods are based on derivations of
-the binomial distribution. Similarly to microarrays, there are many available tools to perform these
-analysis using the R language (such as edger and DESeq).
 
-TASK: Open example_RNA_counts.edger_analysis.tab and Dmelano_rnaseq.bayseq_diff.txt with a
-text editor or in a spreadsheet. How would you go about selecting genes of interest? What would you
-do with this list? Is statistically significant the same as biologically significant?
-NOTE: Several experiments can have different numbers of reads sequenced (for the same amount of
-RNA). Moreover, gene length also influences the number of counts. One common normalization is to
-transform counts into FPKM (fragments per kb per million aligned reads). Nonetheless this measure
-needs to be used with caution, particularly when comparing different loci.
+[ND: htseq-count, by default, uses strand information... ask them to test these settings]
+
+
 
 Task: Use qualimap to generate gene counts. Use 
 
+[ND: Prepare the Drosophila example to allow to run many different things without having to wait a long time]
+[ND: Prepare the GTF with just a few relevant genes for the Drosophila example...]
+[ND: Prepare cDNA for that too... for salmon]
+[ND: Add bedtools overlap??]
+
 Run a Salmon alignment: no SAM/BAM is generated.
+
+TODO: Run htseq-count with . Similarly to the alignments, only run one at a time during the course. 
 
 [ND: mention SeqMonk?]
 
@@ -254,9 +268,28 @@ Run a Salmon alignment: no SAM/BAM is generated.
 # Learning Outcome 8: Generate lists of differentially expressed genes, at least for a simple pairwise comparison
 
 ## LO 8.1 - Using the R package edgeR to produce a pairwise differential expression analysis
+
+From these count files several methods can be then used to perform statistical tests. Given that
+sequencing data is based on discrete counts, most of the popular methods are based on derivations of
+the binomial distribution. Similarly to microarrays, there are many available tools to perform these
+analysis using the R language (such as edger and DESeq).
+
+
+[Normalization: use info from slides of ndarc]
+[Trimmed mean from edger a bit more complex; DESEQ easier to understand...]	
 	
 		Use Galaxy to produce differentially expressed genes with edgeR
 		Use edgeR in R and RStudio 
+
+TASK: Open example_RNA_counts.edger_analysis.tab and Dmelano_rnaseq.bayseq_diff.txt with a
+text editor or in a spreadsheet. How would you go about selecting genes of interest? What would you
+do with this list? Is statistically significant the same as biologically significant?
+NOTE: Several experiments can have different numbers of reads sequenced (for the same amount of
+RNA). Moreover, gene length also influences the number of counts. One common normalization is to
+transform counts into FPKM (fragments per kb per million aligned reads). Nonetheless this measure
+needs to be used with caution, particularly when comparing different loci.		
+
+[Check DESeq for Salmon output may fail due to some R libraries that may be needed??]
 
 ## LO 8.2 - Interpretation and visualization of results
 
