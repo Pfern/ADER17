@@ -1,13 +1,23 @@
-# Learning Outcome 1:
+# Learning Outcome 1: Plan your experiment using NGS technologies
 
-[ND: Add Just some notes for completeness...]
+The analysis of gene expression will depend heavily on how the RNA is obtained. Do we want to use total RNA, or mRNA-specific methods? Since most people are interested in coding-genes, it is more common to use mRNA-specific protocols. Moreover, this type of data tends to be less noisy and less prone to the overflow of highly expressed RNAs such as ribosomal RNAs. Some protocols can also keep strand information. Also, are we dealing with samples with a lot of RNA (eg. cell cultures), or short amounts (eg. small tissue samples, single-cell) that are prone to amplification artifacts and presence of contaminant sequences? 
 
-Differential expression: single-end, short reads, unstranded are enough; should invest in more biological replicates rather than very deep sequencing; 10-40M reads should be enough to capture most "reasonably" expressed genes.
+For the analysis of differential gene expression, long reads, paired-end, and stranded library preparation methods are not as important, particularly if a reference genome is available. Focus should be given on replicates in order to obtain accurate measures of variances. The number of replicates and depth of sequencing depends on the experiment. For highly controlled conditions (such as cell cultures), 2-3 replicates could be enough. In terms of coverage, 10-40M reads should be enough to capture most "reasonably" expressed genes, although in single-cell experiments less reads may be sufficient (5-10M). Nonetheless, to be able to more accurately estimate how much is needed, one should always generate small pilot datasets. 
 
-# Learning Outcome 2:
+A good source of information for this part is [RNA-seqlopedia](http://rnaseq.uoregon.edu).
 
-List of RNA-Seq Steps: from the slides...
-[ND: Add Just some notes for completeness...]
+For this course, we assume unstranded mRNA-specific library preparation methods, and sequenced using illumina (NextSeq, HiSeq) short (less than 100bp), single-end reads. We will also assume two conditions (which we want to compare) and 3 replicates per condition, sequenced to a medium throughput (10-40M reads). We will nonetheless explore what to do in other cases such as longer reads, paired data, stranded data, and more complex differential expression conditions. 
+
+# Learning Outcome 2: List steps in the analysis of RNA-Seq differential expression experiments
+
+Steps in the analysis of RNA-Seq:
+	- QC of Raw Data; (Learning Outcome 3)
+	- Preprocessing of Raw Data (if needed); (Learning Outcome 4) 
+	- Alignment of “clean” reads to reference genome (Learning Outcome 5)
+	- QC of Aligments (Learning Outcome 6)
+	- Generate table of counts of genes/transcripts (Learning Outcome 7)
+	- Differential Analysis tests (Learning Outcome 8)
+	- Post-analysis: Functional Enrichment (Learning Outcome 9)
 
 # Learning Outcome 3: Assess the general quality of the raw data from the sequencing facility
 
@@ -54,7 +64,9 @@ FastQC reports provide a series of plots that allow the user to assess the overa
 
 One of the plots indicates distribution of base qualities along the length of reads. You can notice that, at least for illumina data, on average the quality of each base tends to decrease along the length of the read. You can also see that the reverse read (R2) is usually of worse quality than the forward read (R1). Therefore, short single-end reads usually have better average quality, and are often ready to use right out of the sequencer.
 
-[images of quality]
+![Base Quality](images/base_quality.png)
+
+![Tile Quality](images/tile_quality.png)
 
 Other plots indicate biases in nucleotidic content of reads, either globally (as %GC plots), or positionally. Global bias in nucleotidic content can be useful to search for signs of contaminants. On the other hand, positional bias are useful to detect presence of artefactual sequences in your reads such as adaptors. Another insight you may obtain from this information are potential biases in the preparation of your library. For example, random hexamer priming is actually not truly random, and preferentially selects certain sequences. The currently popular transposase-based enzymatic protocol, although reasonably random, is also not completely random, and you can see this through positional bias, particularly in the beginning of reads. The presence of adaptors is a relatively common event, and therefore specific plots exist to detect the presence of the most commonly used adaptors. Finally, the presence of repetitive sequences can also suggest contaminants, pcr artifacts, or other types of bias.
 
@@ -73,15 +85,15 @@ Sometimes things can go wrong, and you may need to do something about it. Some t
 
 As you may have noticed before, reads tend to lose quality towards their end, where there is a higher probability of erroneous bases being called. To avoid problems in subsequent analysis, you should remove regions of poor quality in your read, usually by trimming them from the end of reads using tools such as [seqtk](https://github.com/lh3/seqtk). 
 
-QUESTION: Even if all bases that your machine reads have a Q=20 (1% error rate), what is the probability that one 100bp read is completely correct? To answer this, consider also that all bases are read independently.
+**Question**: Even if all bases that your machine reads have a Q=20 (1% error rate), what is the probability that one 100bp read is completely correct? To answer this, consider also that all bases are read independently.
 
-TASK: In Galaxy, use seqtk_trimfq with different error thresholds in the example datasets. Use FastQC to evaluate the impact of the procedure. Compare this with the simpler approach of cutting your reads to a fixed length.
+**Task**: In Galaxy, use seqtk_trimfq with different error thresholds in the example datasets. Use FastQC to evaluate the impact of the procedure. Compare this with the simpler approach of cutting your reads to a fixed length.
 
-QUESTION: If you are too stringent, you may remove too many bases, but if you are too lenient, you may fall in local optima, because behind a good quality base may be more bad quality ones. What other strategies you can imagine to filter your reads?
+**Question**: If you are too stringent, you may remove too many bases, but if you are too lenient, you may fall in local optima, because behind a good quality base may be more bad quality ones. What other strategies you can imagine to filter your reads?
 
 Another popular tool to filter fastq files is [Trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic). This tool implements more ellaborate trimming strategies, such as average window threshold.
 
-Task: In Galaxy, use Trimmomatic to remove low quality bases from the example datasets. Notice that the default method in Trimmomatic is a 4bp window average, with a threshold of Q=20. Finally, look at the impact using FastQC of trimmed reads. NOTE: Trimmomatic requires you to specify that you use the "standard" Phred Q scale (fastqsanger), which was different from the one used in older datasets (before 2012), so you need to manually change the datatype of your dataset from generic fastq to fastqsanger.
+**Task**: In Galaxy, use Trimmomatic to remove low quality bases from the example datasets. Notice that the default method in Trimmomatic is a 4bp window average, with a threshold of Q=20. Finally, look at the impact using FastQC of trimmed reads. NOTE: Trimmomatic requires you to specify that you use the "standard" Phred Q scale (fastqsanger), which was different from the one used in older datasets (before 2012), so you need to manually change the datatype of your dataset from generic fastq to fastqsanger.
 
 ## LO 4.2 - Use tools such as cutadapt to remove adaptors and other artefactual sequences from your reads
 
@@ -89,17 +101,17 @@ Sequence machines often require that you add specific sequences (adaptors) to yo
 
 To remove these unwanted sequences, not only you have to look for the sequence in the reads, but also allow for sequencing errors, as well as the presence of incomplete sequences. Tools such as [cutadapt](http://cutadapt.readthedocs.io/en/stable/guide.html) do precisely this.
 
-TASK: In Galaxy, use cutadapt to remove adaptors from sample_adaptors.fastq. In this sample, we know that we used the illumina adaptor GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT, so try to remove this from the 3' end of reads and see the impact of the procedure. What happened? You noticed that almost no read was affected. This is because what you get is a readthrough, so you actually have the reverse complement of the adaptor. Now, try the same procedure but with AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC (reverse complement of the previous). Much better, no? 
+**Task**: In Galaxy, use cutadapt to remove adaptors from sample_adaptors.fastq. In this sample, we know that we used the illumina adaptor GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT, so try to remove this from the 3' end of reads and see the impact of the procedure. What happened? You noticed that almost no read was affected. This is because what you get is a readthrough, so you actually have the reverse complement of the adaptor. Now, try the same procedure but with AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC (reverse complement of the previous). Much better, no? 
 
 One issue of removing the adaptors is that you need to know which ones were used in your data. FastQC can already tell you which one was used, and you can then go to the illumina manual to search for its sequence. Since Illumina is used most of the time, these adaptors are already integrated in tools like Trimmomatic, which also take in consideration issues like reverse complement. 
 
-TASK: Use Trimmomatic to remove adaptors from sample_adaptors.fastq using Truseq adaptors and use FastQC to see the results.
+**Task**: Use Trimmomatic to remove adaptors from sample_adaptors.fastq using Truseq adaptors and use FastQC to see the results.
 
 Overall, you can use Trimmommatic to do both quality and adaptor trimming. Moreover, Trimmomatic includes widely used adaptors and also transparently handles the issue of paired-end, in case you have this. So it's probably a good choice for general use. There are, nonetheless, several alternative tools that do many of these procedures.
 
 Task: Use Trimmommatic to do quality filtering and adaptor trimming in sample_quality_and_adaptors.fastq (use Nextera adaptors), as well as in the paired-end example RNA-Seq data (use Truseq adaptors). Use FastQC to evaluate the impact of the procedure. Notice that, if you're too strict, you may end up loosing valuable data.
 
-Task: Finally, inspect a complete dataset (your own, or some we provided). First, use FastQC to detect potential issues. If necessary, use Trimmomatic (or any of the other tools we tried).
+**Task**: Finally, inspect a complete dataset (your own, or some we provided). First, use FastQC to detect potential issues. If necessary, use Trimmomatic (or any of the other tools we tried).
 
 # Learning Outcome 5: Generate alignments of processed reads against a reference genome
 
@@ -115,7 +127,7 @@ It is fundamental to register the version of the genome used, as well as from wh
 
 Finally, another alternative is to use cDNA sequences directly as a reference. This is sometimes the only alternative, when full good quality genomes are not available. The presence of multiple alternative transcripts can make the alignment more difficult, but more recent approaches can actually take this information in consideration. We can also select collections of cDNAs that are relevant for our analysis (eg. focusing on protein-coding cDNAs, and/or choosing a single representative cDNA per gene).
 
-Task: Obtain genomic fasta for Drosophila melanogaster from the Ensembl website. Finally, also download a fasta with cDNA. Take note of the Ensembl version, as well as the version of your genome (in case later you wano to integrate data that is not from Ensembl). Obtain genomic and cDNA fasta from ENSEMBL for the species relevant for your complete dataset.
+**Task**: Obtain genomic fasta for Drosophila melanogaster from the Ensembl website. Finally, also download a fasta with cDNA. Take note of the Ensembl version, as well as the version of your genome (in case later you wano to integrate data that is not from Ensembl). Obtain genomic and cDNA fasta from ENSEMBL for the species relevant for your complete dataset.
 
 ## LO 5.2 - Alignment software: hisat; bwa; salmon
 
@@ -135,19 +147,19 @@ As we mentioned before, aligners for NGS data depend on large data structures fo
 
 When performing the alignment in Galaxy, you usually have two options: either you pass the tool a fasta with the reference genome, or you select an available genome. When using an available genome, the indexing step was already performed, while if you provide your own fasta of the genome, and indexing step will have to be performed before the alignment step. If your genome of interest is relatively large (roughly >100Mb), it is more efficient to have it pre-built, particularly if you're reusing it often. For this, you will need to ask the persons managing the service you're using.
 
-Task: In Galaxy, run Hisat2 on one of the paired-end example files (in single-end mode) against the Drosophila genome that should be prebuilt in your Galaxy instance. Now run the same, but using as input the fasta for the Drosophila genome that you downloaded previously instead of the prebuilt one already available. Compare the differences in the time it takes. 
+**Task**: In Galaxy, run Hisat2 on one of the paired-end example files (in single-end mode) against the Drosophila genome that should be prebuilt in your Galaxy instance. Now run the same, but using as input the fasta for the Drosophila genome that you downloaded previously instead of the prebuilt one already available. Compare the differences in the time it takes. 
 
 Researchers felt the need to develop new, more practical formats to store millions of alignments being generated by these aligners. The [Sequence Alignment/Map (SAM) format](https://samtools.github.io/hts-specs/SAMv1.pdf) is a tabular text file format, where each line contains information for one alignment. SAM files are most often compressed as BAM (Binary SAM) files, to reduce space and allow direct access to alignments in any arbitrary region of the genome. Several tools only work with BAM files. Some aligners still produce only SAM files, which may need to be converted to BAM [ND: ADD some tool in Galaxy to make the conversion... also check that neither Hisat2 or the new bwa produce sam].
 
-Task: Upload the example SAM file [ND: from the alignment of the available fastq]. Inspect it. Convert to BAM [ND: May need the genome].
+**Task**: Upload the example SAM file [ND: from the alignment of the available fastq]. Inspect it. Convert to BAM [ND: May need the genome].
 
 Most genomes (particularly mamallian genomes) contain areas of low complexity, composed mostly of repetitive sequences. In the case of short reads, sometimes these align to multiple regions in the genome equally well, making it impossible to know where the fragment came from. Longer reads are needed to overcome these difficulties, or in the absence of these, paired-end data can also be used. Some aligners (such as hisat or bwa) can use information from paired reads to help disambiguate some alignments. Information on paired reads is also added to the SAM/BAM file when proper aligners are used.
 
-Task: Upload the example SAM file with paired-end data. Inspect it [compare paired-end and single-end?].
+**Task**: Upload the example SAM file with paired-end data. Inspect it [compare paired-end and single-end?].
 
-Task: In Galaxy, run hisat2 and bwa mem with the example paired-end data.
+**Task**: In Galaxy, run hisat2 and bwa mem with the example paired-end data.
 
-Task: In Galaxy, run Hisat2 on the complete dataset. Use a genome that is already prebuilt, to save time. During the day, so that you can work on other things in Galaxy during the course, run one alignment at a time. If you still need to run alignments at the end of the day, then you can launch all in a queue to be run overnight.
+**Task**: In Galaxy, run Hisat2 on the complete dataset. Use a genome that is already prebuilt, to save time. During the day, so that you can work on other things in Galaxy during the course, run one alignment at a time. If you still need to run alignments at the end of the day, then you can launch all in a queue to be run overnight.
 
 Salmon directly estimates transcript expression (not alignments), and thus we will come back to it later on.
 
@@ -164,15 +176,14 @@ Gene annotations are usually complex to create, particularly for large mammalian
 
 The same way ENSEMBL is a good source for the genome sequence, it is also a good source to obtain gene annotations. ENSEMBL even defined a specific variant of the GFF format ([GTF](http://www.ensembl.org/info/website/upload/gff.html)) which is commonly accepted by most applications. 
  
-Task: Obtain the latest Drosophila melanogaster GTF from Ensembl, as well as the GTF for the organism relevant for your complete dataset.
+**Task**: Obtain the latest Drosophila melanogaster GTF from Ensembl, as well as the GTF for the organism relevant for your complete dataset.
 
 
 ## LO 6.2 - Visualizing alignments in IGV for single genes
 
 To visualize the alignments along the reference genome one can use software such as [IGV](http://software.broadinstitute.org/software/igv/) or [Tablet](https://ics.hutton.ac.uk/tablet/), which work in most for the most common operating systems. To avoid loading all alignments simultaneously in memory, and to be able to quickly search for region-specific alignments, this software uses the BAM format. 
 
-TASK: Run IGV and look at the provided sample BAM file with alignments [ND: provided from lguilgur et al - same as for the NGS part]. 
-- In IGV, load the Drosophila genome as reference (fasta); load the annotation file (gtf) and alignment files (*.bam)
+**Task**: In the guilgur folder, you'll have data from [Guilgur et al, 2014](https://elifesciences.org/content/3/e02181). Run IGV and look at the provided sample BAM files with alignments. In IGV, load the Drosophila genome as reference (fasta), and then load the provided annotation file (gtf) and alignment files (*.bam). Note that for this case, you need to load Drosophila BDGP5 and not BDGP6 (unless you redid alignments using the raw data that are also provided). 
 [ND: mention that gtf can also be indexed... maybe provide it already indexed??]
 [ND: mention that gtf can also be indexed... maybe provide it already indexed??]
 [ND: exemplify UCSC and ENSEMBL chr differences]. 
@@ -181,10 +192,10 @@ TASK: Run IGV and look at the provided sample BAM file with alignments [ND: prov
 - Look at position X:5793758-5799858
 [ND: compare coverage; notice the 3' bias particularly in one of the replicates]
 
-QUESTION: Would you be able to detect all of what you saw here using microarrays? If not, what and why?
+**Question**: Would you be able to detect all of what you saw here using microarrays? If not, what and why?
 [ND: The reads overlapping introns; variants etc...]
 
-TASK: Download the BAM files you generated for your complete dataset, and load it in IGV. Don't forget to also download the companion bai index files. Also, don't forget you first need to load an appropriate genome of reference and gene annotation (GTF file) that you should have downloaded previously. [ND: I only mention GTF files later....]
+**Task**: Download the BAM files you generated for your complete dataset, and load it in IGV. Don't forget to also download the companion bai index files. Also, don't forget you first need to load an appropriate genome of reference and gene annotation (GTF file) that you should have downloaded previously. [ND: I only mention GTF files later....]
 
 [ND: Check if you can visualize with Galaxy - either directly, or see IGV link??]
 
@@ -201,11 +212,11 @@ Another measure that can be used is the percentage of reads with duplicates (ali
 
 QUESTION: Why duplication rates are frequently high in RNA-Seq? 
 
-Task: In Galaxy, check the percentage of aligned reads in the alignments generated previously with sample datasets. Compare paired-end versus single-end, before and after trimming. Also compare the effect of changing the genome of reference.
+**Task**: In Galaxy, check the percentage of aligned reads in the alignments generated previously with sample datasets. Compare paired-end versus single-end, before and after trimming. Also compare the effect of changing the genome of reference.
 
 Finally, there are reports specific for RNA-Seq which depend on gene annotation. One report indicates how well the genes are covered by sequence, which provides a good indication of RNA integrity. Finally, one can also check how well the alignments match the known annotation. The presence of a lot of alignments outside annotated genes can mean several things: annotation is not correct (eg. if you're working with a non-model organism); there can be DNA contamination; presence of immature RNA. Qualimap and [RSeqC](http://rseqc.sourceforge.net/) provide a set of tools to produce RNA-Seq specific reports. 
 
-Task: Produce Qualimap (outside Galaxy) and RSseQC (in Galaxy) reports for the alignments you generated with your complete datasets. Some RSeqQC reports may take some time, so take care to run only one at a time during the day in Galaxy (similar to the alignments).
+**Task**: Produce Qualimap (outside Galaxy) and RSseQC (in Galaxy) reports for the alignments you generated with your complete datasets. Some RSeqQC reports may take some time, so take care to run only one at a time during the day in Galaxy (similar to the alignments).
 
 [ND: RSeQC needs Bed files: either downloaded from UCSC or transformed from GTF]
 
@@ -220,43 +231,30 @@ Task: Produce Qualimap (outside Galaxy) and RSseQC (in Galaxy) reports for the a
 
 To perform differential expression analysis we need to count, for each sample, how many times a different transcript/gene is read. If we align directly against the transcriptome, we just need to count the number of alignments per gene/transcript. However, if there are many alternative transcripts, aligning will become difficult. One solution may be to use just one representative transcript, or the union of all transcripts to represent the gene, although this also has issues.
 
-What is most often done is to align against the genome, and compare the alignments (SAM/BAM) against the gene annotation (as GTF or BED). We could consider that a read counts to a gene if it overlaps with any part of the gene. In large mammalian genomes, genes can have large introns, and it is not rare that genes overlap with each other. The presence of DNA contaminant and immature RNA may influence counts.
+What is most often done is to align against the genome, and compare the alignments (SAM/BAM) against the gene annotation (as GTF or BED). We could consider that a read counts to a gene if it overlaps with any part of the gene, but in large mammalian genomes, genes can have large introns, and it is not rare that genes overlap with each other. Moreover, the presence of DNA contamination and immature RNAs may also influence the counts.
 
-Thus, it is usually preferable that a read will count for a gene only if it overlaps to at least some part corresponding to a valid mRNA transcribed from that gene. Nonetheless, there are stil 
+Thus, it is usually preferable that a read will count for a gene only if it overlaps to at least some part corresponding to a valid mRNA transcribed from that gene. Then, if we have strand information, we should use it to resolve other possible ambiguities. But there are stil other factors to take in consideration. What to do if a read maps equally well to multiple genome regions? This will now depends a bit on the behavior on the alignment software. Usually, these cases are marked as having a low mapping quality, so we can simply ignore them by excluding alignments with a low mapping quality. But byt ignoring these cases we're losing information, and in the case of large genomes with a lot of large duplicated regions, this can be problematic. Again, if we want to use this information, we need to take into consideration what the aligner software will do. For example, bwa randomly attributes a read to one of the sites, while hisat outputs all alignmens (up to a given limit of k equally good ones). Some counting tools will actually use the information that a read aligns to different places to estimate the likelihood that a read belongs to one or the other, depending on the local (unique) coverage. This is in fact the type of approach Salmon uses to attribute reads to transcripts. Salmon does not output an exact number of reads per transcript, but the sum of the likelihoods of reads belonging to it (eg. a read may have 60% likelihood of belonging to a transcript, and thus will count not as 1, but as 0.6).
 
-Note that we also need to
+Finally, how to avoid pcr artifacts? To be as safe as possible, we would remove duplicates to avoid pcr artifacts, and this frequently needs to be done before the counting process. Nonetheless, given that duplicates can be frequent in RNA-Seq, usually we do not remove them. Assuming that pcr artifacts occurr randomly, then we should not have the same artifact in different biological replicates. In any case, for genes that are very important to use, we should always also visually check the alignments using software such as IGV.
 
-. Reads that equally map to multiple genome regions have a low mapping quality. But the way this is handled depends on the aligner. Bwa randomly attributes a read to one of the sites; Hisat obtains all sites (up to a certain given number of k sites). 
-
-To be as safe as possible, we would remove duplicates to avoid pcr artifacts. Nonetheless, given that duplicates can be frequent in RNA-Seq, usually we do not remove them. Assuming that pcr artifacts occurr randomly, then the same artifact should not occurr in different biological replicates. In any case, for genes that are very important to use, we should always also visually check the alignments using software such as IGV.
-
-If we have strand information, 
-
-Notice that counting is not the same as .
-
-Finally, 
-
-[mapping quality: namely, do we include or not the multiple alignments; stranded or not!]
 
 ## LO 7.2 - Use tools such as htseq-counts to generate table of gene counts
 
-A popular tool to generate these counts from a SAM/BAM file is [htseq-count](http://www-huber.embl.de/HTSeq).
-
-TASK: Open example_RNA_counts.htseq.tab in the text editor or in a spreadsheet
-How would you about checking which genes are differential expressed?
-
-[ND: htseq-count, by default, uses strand information... ask them to test these settings]
-
-Task: Use qualimap to generate gene counts. Use 
+A popular tool to generate these counts from SAM/BAM alignments and GFF/GTF gene annotations is [htseq-count](http://www-huber.embl.de/HTSeq). Its default behavior is to generate counts at the gene level. It assigns a read to a gene if it unambiguously overlaps at least one part of a cDNA produced by the gene. It ignores reads mapping equally well to multiple positions by requiring by default a minimum mapping quality. By default it assumes stranded libraries, so we need to explicitly mention unstranded. 
 
 [ND: Prepare the Drosophila example to allow to run many different things without having to wait a long time]
 [ND: Prepare the GTF with just a few relevant genes for the Drosophila example...]
+[ND: Notice the GTF versions!!]
 [ND: Prepare cDNA for that too... for salmon]
 [ND: Add bedtools overlap??]
 
-Run a Salmon alignment: no SAM/BAM is generated.
+**Task**: Use htseq-counts with the guilgur data (also use the sample gene annotations). Use the provided alignments, and also try with your own alignments (obtained from the raw reads against a recent Drosophila genome). Try different parameters (namely related to strand and multiple mappings) and see the differences. Also check the effect of using an incorrect GTF file (not matching the correct genome version). 
 
-TODO: Run htseq-count with . Similarly to the alignments, only run one at a time during the course. 
+[ND: Qualimap also has functionality to generate read counts. Try that too]
+
+**Task**: Run a Salmon "alignment" of the guilgur data against the sample transcriptome. Notice that no SAM/BAM is generated. Also compare results with the ones generated by htseq-counts. 
+
+**Task**: Run htseq-count and salmon for your complete dataset. Similarly to the alignments, only run one at a time during the course and if necessariy leave them all running overnight.
 
 [ND: mention SeqMonk?]
 
@@ -264,6 +262,10 @@ TODO: Run htseq-count with . Similarly to the alignments, only run one at a time
 # Learning Outcome 8: Generate lists of differentially expressed genes, at least for a simple pairwise comparison
 
 ## LO 8.1 - Using the R package edgeR to produce a pairwise differential expression analysis
+
+**Task**: Open example_RNA_counts.htseq.tab in the text editor or in a spreadsheet
+How would you about checking which genes are differential expressed?
+
 
 From these count files several methods can be then used to perform statistical tests. Given that
 sequencing data is based on discrete counts, most of the popular methods are based on derivations of
