@@ -116,9 +116,9 @@ Participants are encouraged to bring their own data and try some of the concepts
 
 	LO 8 - Generate lists of differentially expressed genes, at least for a simple pairwise comparison
 
-		LO 8.1 - Using the R package edgeR to produce a pairwise differential expression analysis
-			Use Galaxy to produce differentially expressed genes with edgeR
-			Use edgeR in R and RStudio 
+		LO 8.1 - Using the R package edgeR and DESeq2 to produce a pairwise differential expression analysis
+			Use Galaxy to produce differentially expressed genes with edgeR and DESeq2
+			Use edgeR and DESeq2 in R and RStudio 
 
 		LO 8.2 - Interpretation and visualization of results
 			Produce PCA plots comparing all samples: outlier detection
