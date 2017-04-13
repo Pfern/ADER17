@@ -131,8 +131,8 @@ Participants are encouraged to bring their own data and try some of the concepts
 
 	LO 9 - Perform simple functional enrichment analysis and understand the concepts behind them
 		(TODO: Daniel Faria)
-		LO 9.1 - Functional annotations: what are these and where to get them
-		LO 9.2 - The statistics behind functional enrichment analysis
+		LO 9.1 - The statistics behind functional enrichment analysis
+		LO 9.2 - Functional annotations: what are these and where to get them
 		LO 9.3 - Using functional enrichment analysis with your lists of genes
 
 

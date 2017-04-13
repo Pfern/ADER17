@@ -235,25 +235,47 @@ A popular tool to generate these counts from SAM/BAM alignments and GFF/GTF gene
 
 ## LO 8.1 - Using the R packages edgeR and DESeq2 to produce a pairwise differential expression analysis
 
-The analysis methods currently most commonly used to perform RNA-Seq differential gene expression analysis start from non-normalized raw read counts like what we obtained previously. Given that sequencing data is based on discrete counts, most of these popular methods are based on derivations of the binomial distribution. Similarly to microarrays, there are many available tools to perform these analysis using the R language (such as [edger](https://bioconductor.org/packages/release/bioc/html/edgeR.html) and [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)).
+The analysis methods currently most commonly used to perform RNA-Seq differential gene expression analysis start from non-normalized raw read counts like what we obtained previously (note that Salmon is not exactly like this). Given that sequencing data is based on discrete counts, most of these popular methods are based on derivations of the binomial distribution. Similarly to microarrays, there are many available tools to perform these analysis using the R language (such as [edger](https://bioconductor.org/packages/release/bioc/html/edgeR.html) and [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)).
+
+The first thing that is done by edgeR or DESeq2 is to normalize the table of counts. Given that you can have different numbers of reads for each sample, you need to account for these differences. Nonetheless, this is not enough. You need to be aware that sequencing is a sampling experiment. If in one sample there is a gene or set of genes very highly expressed, then the amount of reads available for the rest of the genes is lower than for other samples where the highly expressed gene is not so highly expressed. So, many genes that may not be differentially expressed will appear so just because of this sampling artifact. 
+
+If we assume that most genes are not differentially expressed, then the ratio of counts between samples should be the same for most genes. Under this assumption, we can obtain the mean counts for all genes, calculate the ratio against this reference mean for each gene in each sample, and then take the median of all ratios within one sample (to avoid the outliers). This median is then the sample specific normalization factor. This is the process that DESeq applies. EdgeR applies a similar, although more sophisticated, approach (trimmed mean of M-values, or TMM in short). 
 
 
-**Task**: Use Open example_RNA_counts.htseq.tab in the text editor or in a spreadsheet
-How would you about checking which genes are differential expressed?
 
 
+Multiple testing correction
+ We tests thousands of genes, so it is possible that some
+genes get good p-values just by chance
+ To control this problem of false positives, p-values need to be
+corrected for multiple testing
+ Several methods are available, the most popular one is the
+Benjamini-Hochberg correction (BH)
+• largest p-value is not corrected
+• second largest p = (p *n)/ (n-1)
+• third largest p = (p * n)/(n-2)
+• ...
+• smallest p = (p * n)/(n- n+1) = p * n
+ The adjusted p-value is FDR (false discovery rate)
 
 
-[Normalization: use info from slides of ndarc]
-[Trimmed mean from edger a bit more complex; DESEQ easier to understand...]	
-	
-		Use Galaxy to produce differentially expressed genes with edgeR
-		Use edgeR in R and RStudio 
+Filtering
+ Reduces the severity of multiple testing correction by
+removing some genes (makes n smaller)
+ Filter out genes which have little chance of showing
+evidence for significant differential expression
+• genes which are not expressed
+• genes which are expressed at very low level (low counts are
+unreliable)
+ Should be independent
+• do not use information on what group the sample belongs to
+ DESeq2 selects filtering threshold automatically
 
 
-[Check DESeq for Salmon output may fail due to some R libraries that may be needed??]
 
 ## LO 8.2 - Interpretation and visualization of results
+
+**Task**: In Galaxy, use DESeq2 with the htseq-count results you obtained previously for the guilgur data. Perform a simple parwise Wild-Type versus Mutant comparison with two replicates each.
 
 TASK: Open example_RNA_counts.edger_analysis.tab and Dmelano_rnaseq.bayseq_diff.txt with a
 text editor or in a spreadsheet. How would you go about selecting genes of interest? What would you
@@ -263,13 +285,19 @@ RNA). Moreover, gene length also influences the number of counts. One common nor
 transform counts into FPKM (fragments per kb per million aligned reads). Nonetheless this measure
 needs to be used with caution, particularly when comparing different loci.
 
+**Task**: In Galaxy, use DESeq2 and edgerR with the htseq-count results you obtained for your complete dataset.
+
 
 		Produce PCA plots comparing all samples: outlier detection
 		Visualize expression profiles of top differentially expressed genes
 		Produce other plots such as vulcano plots
 
+[Check DESeq for Salmon output may fail due to some R libraries that may be needed??]
+
+
 ## LO 8.3 - Use more complex settings: Generalized Linear Models
 
+		Use edgeR in R and RStudio 
 		Account for confounders using Generalized Linear Models
 		Performing ANOVA-like comparisons
 
