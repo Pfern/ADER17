@@ -245,34 +245,15 @@ To calculate differentially expressed genes, we need to take into consideration 
 
 We then test each gene for differential expression, and we obtain a probability for the test. Since we test thousands of genes, some genes may get good p-values just by chance. One way of avoiding this is by multiplying the p-value by the number of tests (a method called Bonferroni correction). This is nonetheless too strict and we usually end up not having anything differentially expressed. Other methods . We will look into more detail on this when we discuss functional enrichment analysis. In the end of a DESeq2 or edgeR analysis, instead of looking at the p-value, we should rather look at the corrected p-value (FDR, or qvalue) for significance. Finally, another way of minimizing the number of tests is to filter out the genes that have very low expression in all samples. 
 
-Filtering
- Reduces the severity of multiple testing correction by
-removing some genes (makes n smaller)
- Filter out genes which have little chance of showing
-evidence for significant differential expression
-• genes which are not expressed
-• genes which are expressed at very low level (low counts are
-unreliable)
- Should be independent
-• do not use information on what group the sample belongs to
- DESeq2 selects filtering threshold automatically
-
-
 
 ## LO 8.2 - Interpretation and visualization of results
 
 **Task**: In Galaxy, use DESeq2 with the htseq-count results you obtained previously for the guilgur data. Perform a simple parwise Wild-Type versus Mutant comparison with two replicates each.
 
-Even before 
+Even before interpreting the results of the differential expression analysis, we should have 
 
 
-TASK: Open example_RNA_counts.edger_analysis.tab and Dmelano_rnaseq.bayseq_diff.txt with a
-text editor or in a spreadsheet. How would you go about selecting genes of interest? What would you
-do with this list? Is statistically significant the same as biologically significant?
-NOTE: Several experiments can have different numbers of reads sequenced (for the same amount of
-RNA). Moreover, gene length also influences the number of counts. One common normalization is to
-transform counts into FPKM (fragments per kb per million aligned reads). Nonetheless this measure
-needs to be used with caution, particularly when comparing different loci.
+How would you go about selecting genes of interest? What would you do with this list? Is statistically significant the same as biologically significant?
 
 **Task**: In Galaxy, use DESeq2 and edgerR with the htseq-count results you obtained for your complete dataset.
 
@@ -285,6 +266,12 @@ needs to be used with caution, particularly when comparing different loci.
 
 
 ## LO 8.3 - Use more complex settings: Generalized Linear Models
+
+So far, we just considered the simple case of pairwise comparison.
+
+We may want to control for the batch (or replicate).
+
+
 
 		Use edgeR in R and RStudio 
 		Account for confounders using Generalized Linear Models
