@@ -11,13 +11,13 @@ For this course, we assume unstranded mRNA-specific library preparation methods,
 # Learning Outcome 2: List steps in the analysis of RNA-Seq differential expression experiments
 
 Steps in the analysis of RNA-Seq:
-	- QC of Raw Data; (Learning Outcome 3)
-	- Preprocessing of Raw Data (if needed); (Learning Outcome 4) 
-	- Alignment of “clean” reads to reference genome (Learning Outcome 5)
-	- QC of Aligments (Learning Outcome 6)
-	- Generate table of counts of genes/transcripts (Learning Outcome 7)
-	- Differential Analysis tests (Learning Outcome 8)
-	- Post-analysis: Functional Enrichment (Learning Outcome 9)
+* QC of Raw Data; (Learning Outcome 3)
+* Preprocessing of Raw Data (if needed); (Learning Outcome 4) 
+* Alignment of “clean” reads to reference genome (Learning Outcome 5)
+* QC of Aligments (Learning Outcome 6)
+* Generate table of counts of genes/transcripts (Learning Outcome 7)
+* Differential Analysis tests (Learning Outcome 8)
+* Post-analysis: Functional Enrichment (Learning Outcome 9)
 
 # Learning Outcome 3: Assess the general quality of the raw data from the sequencing facility
 
