@@ -241,23 +241,9 @@ The first thing that is done by edgeR or DESeq2 is to normalize the table of cou
 
 If we assume that most genes are not differentially expressed, then the ratio of counts between samples should be the same for most genes. Under this assumption, we can obtain the mean counts for all genes, calculate the ratio against this reference mean for each gene in each sample, and then take the median of all ratios within one sample (to avoid the outliers). This median is then the sample specific normalization factor. This is the process that DESeq applies. EdgeR applies a similar, although more sophisticated, approach (trimmed mean of M-values, or TMM in short). 
 
+To calculate differentially expressed genes, we need to take into consideration how much (normalized) counts vary between the different samples. This variation is clearly gene dependent, since highly expressed genes vary more in terms of absolute value, and low expressed genes vary more in terms of % of gene expression (fold change). If one only looks at fold change without taking variation into account, we’re more likely to have low expressed genes as differentially expressed. Therefore, we need to accurately estimate variation per gene, but we usually do not have enough replicates to do this on a gene by gene basis. One alternative that is used by edgeR and DESeq2 is to bin genes with similar expression and fit a curve.
 
-
-
-Multiple testing correction
- We tests thousands of genes, so it is possible that some
-genes get good p-values just by chance
- To control this problem of false positives, p-values need to be
-corrected for multiple testing
- Several methods are available, the most popular one is the
-Benjamini-Hochberg correction (BH)
-• largest p-value is not corrected
-• second largest p = (p *n)/ (n-1)
-• third largest p = (p * n)/(n-2)
-• ...
-• smallest p = (p * n)/(n- n+1) = p * n
- The adjusted p-value is FDR (false discovery rate)
-
+We then test each gene for differential expression, and we obtain a probability for the test. Since we test thousands of genes, some genes may get good p-values just by chance. One way of avoiding this is by multiplying the p-value by the number of tests (a method called Bonferroni correction). This is nonetheless too strict and we usually end up not having anything differentially expressed. Other methods . We will look into more detail on this when we discuss functional enrichment analysis. In the end of a DESeq2 or edgeR analysis, instead of looking at the p-value, we should rather look at the corrected p-value (FDR, or qvalue) for significance. Finally, another way of minimizing the number of tests is to filter out the genes that have very low expression in all samples. 
 
 Filtering
  Reduces the severity of multiple testing correction by
@@ -276,6 +262,9 @@ unreliable)
 ## LO 8.2 - Interpretation and visualization of results
 
 **Task**: In Galaxy, use DESeq2 with the htseq-count results you obtained previously for the guilgur data. Perform a simple parwise Wild-Type versus Mutant comparison with two replicates each.
+
+Even before 
+
 
 TASK: Open example_RNA_counts.edger_analysis.tab and Dmelano_rnaseq.bayseq_diff.txt with a
 text editor or in a spreadsheet. How would you go about selecting genes of interest? What would you
@@ -302,13 +291,19 @@ needs to be used with caution, particularly when comparing different loci.
 		Performing ANOVA-like comparisons
 
 
-# Learning Outcome 9 - Perform simple functional enrichment analysis and understand the concepts behind them
+# Learning Outcome 9 - Perform simple functional enrichment analysis and understand the concepts involved
 
-		(TODO: Daniel Faria)
-		LO 9.1 - Functional annotations: what are these and where to get them
-		LO 9.2 - The statistics behind functional enrichment analysis
-		LO 9.3 - Using functional enrichment analysis with your lists of genes
+## LO 9.1 - How to extracting meaning from a list of genes
 
+	What are functional annotations, what types exist, and where to get them
+       
+## LO 9.2 - Understand the concept of functional enrichment analysis, and the statistics involved
+
+	Question: when and why do we need multiple test corrections?
+
+## LO 9.3 - Interpreting the results of functional enrichment analysis
+
+	Using functional enrichment analysis with your lists of genes
 
 
 

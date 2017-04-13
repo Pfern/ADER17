@@ -129,12 +129,16 @@ Participants are encouraged to bring their own data and try some of the concepts
 			Account for confounders using Generalized Linear Models
 			Performing ANOVA-like comparisons
 
-	LO 9 - Perform simple functional enrichment analysis and understand the concepts behind them
-		(TODO: Daniel Faria)
-		LO 9.1 - The statistics behind functional enrichment analysis
-		LO 9.2 - Functional annotations: what are these and where to get them
-		LO 9.3 - Using functional enrichment analysis with your lists of genes
+	LO 9 - Perform simple functional enrichment analysis and understand the concepts involved
+		
+		LO 9.1 - How to extracting meaning from a list of genes
+			What are functional annotations, what types exist, and where to get them
+       
+		LO 9.2 - Understand the concept of functional enrichment analysis, and the statistics involved
+			Question: when and why do we need multiple test corrections?
 
+		LO 9.3 - Interpreting the results of functional enrichment analysis
+			Using functional enrichment analysis with your lists of genes
 
 
 ## Detailed Program [available here][mkdnlink].
