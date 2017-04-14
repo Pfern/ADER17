@@ -280,7 +280,7 @@ We may want to control for the batch (or replicate).
 
 # Learning Outcome 9 - Perform simple functional enrichment analysis and understand the concepts involved
 
-## LO 9.1 - How to extracting meaning from a list of genes
+## LO 9.1 - How to extract meaning from a list of genes
 
 	What are functional annotations, what types exist, and where to get them
        
