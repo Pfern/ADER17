@@ -252,31 +252,34 @@ We then test each gene for differential expression, and we obtain a probability 
 
 Even before interpreting the results of the differential expression analysis, we should have an idea of how the samples compare to each other. For this, we can look at plots such as Principal Coordinate Analysis (PCoA) or Multi-Dimensional Scaling (MDS). The way each software implements these plots vary a bit, but in short, they provide some evidence for the relatedness of the samples. Another common plot shows the hierarchical clustering of samples by displaying a heatmap with a matrix of distances between the samples. By looking at these plots we can detect outliers that may need to be removed from the analysis, or possible batch effects that we need to control.
 
-DESeq2 and edgeR also plot the estimates of the biological coefficient of variation (BCV) plot, which not only depicts the sample variation of genes accordinf to their expression, but also illustrates the type of variation correction the software performed, as we discussed in the previous section. Typically, the variation in gene expression is bigger on genes that are low expressed.
+DESeq2 and edgeR also plot the estimates of the biological coefficient of variation (BCV) plot, which depicts the sample variation of genes accordinf to their expression, and illustrates the variation correction the software performed, as we discussed in the previous section. Finally, another type of common plot is the MA or vulcano plot, which displays the average normalized expression of genes and their log fold change between the groups being compared. On top of these graphs it is common to signal the genes that were detected as differentially expressed. 
 
-Finally, another type of common plot is the MA or vulcano plot, which displays the average normalized expression of genes and their log fold change between the groups being compared. On top of these graphs it is common to signal the genes that were detected as differentially expressed. 
+**Task**: In Galaxy, use DESeq2 to perform a pairwise comparison with the htseq-count results you obtained for your complete dataset. Look at the set of plots produced by the software.
 
-How would you go about selecting genes of interest? What would you do with this list? Is statistically significant the same as biologically significant?
+Unfortunately, Galaxy does not produce gene-centered plots, and for those we may need to go to other software such as R. Nonetheless, the Galaxy tools output tables with normalized values that can be used for plotting in any type of software.
 
-**Task**: In Galaxy, use DESeq2 to perform a pairwise comparison with the htseq-count results you obtained for your complete dataset. Look at the set of plots produced by the software
-
-
-		Produce PCA plots comparing all samples: outlier detection
-		Visualize expression profiles of top differentially expressed genes
-		Produce other plots such as vulcano plots
 
 ## LO 8.3 - Use more complex settings: Generalized Linear Models
 
-So far, we just considered the simple case of pairwise comparison.
+So far, we just considered the simple case of pairwise comparison, where all samples are independent. But we may have cases where the samples are not independent. For example, in case of cancer, it is common (and desirable) to have tumor tissue and normal tissue for the same individual. In this case, we have paired information that needs to be taken into account in the test. There can also be other variables (eg. samples were prepared in different batches) that may confound the differential expression analysis. 
 
-We may want to control for the batch (or replicate).
+The [edgeR manual](https://www.bioconductor.org/packages/devel/bioc/vignettes/edgeR/inst/doc/edgeRUsersGuide.pdf) contains several examples that explore these issues. In the pairwise case, the statistical methods are comparable to a t-test or a fisher exact test. Generalized Linear Models (GLM) allow to include information from several variables simultaneously. The simple pairwise case can also be considered as a  GLM, although the statistical methods applied for the test are different than in the "classic" pairwise model. 
 
+In a first example, we have a classic paired test, with tumor and normal samples for one same case. In a second example, we have a treatment, but the samples were obtained in three different moments in time (batches), and this may influence the result.
 
+**Task**: In Galaxy, use edgeR with the files provided for example1 and example2. In both cases, include paired/block information. Compare the difference with and without this information.
 
-		Use edgeR in R and RStudio 
-		Account for confounders using Generalized Linear Models
-		Performing ANOVA-like comparisons
+**Task**: In Galaxy, use edgeR to perform a pairwise comparison with the htseq-count results you obtained for your complete dataset. You will need to transform the htseq-count results into something edgeR can use.
+		
+The tools available in Galaxy are limited in terms of the ability to express more complex experimental designs. For this, we need to go to R and explore all the flexibility that it allows.
+		
+**Task**: Try the example1 and example2 using edgeR in R. For this, use the R script provided.
 
+The final example we will explore contains several factors, and one of the factors have 3 different possible values. This introduces many possibilities of experimental questions to test. We just need to decide which ones are relevant biological questions.
+
+**Task**: Try the example4 using edgeR in R. For this, use the R script provided.
+
+**Task**: Based on what you did before, prepare a table of non-normalized counts for your complete dataset and analyse it using edgeR in R. 
 
 # Learning Outcome 9 - Perform simple functional enrichment analysis and understand the concepts involved
 
