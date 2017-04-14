@@ -248,22 +248,22 @@ We then test each gene for differential expression, and we obtain a probability 
 
 ## LO 8.2 - Interpretation and visualization of results
 
-**Task**: In Galaxy, use DESeq2 with the htseq-count results you obtained previously for the guilgur data. Perform a simple parwise Wild-Type versus Mutant comparison with two replicates each.
+**Task**: In Galaxy, use DESeq2 with the htseq-count results you obtained previously for the guilgur data. Perform a simple parwise Wild-Type versus Mutant comparison with two replicates each. Look at the differentially expressed genes.
 
-Even before interpreting the results of the differential expression analysis, we should have 
+Even before interpreting the results of the differential expression analysis, we should have an idea of how the samples compare to each other. For this, we can look at plots such as Principal Coordinate Analysis (PCoA) or Multi-Dimensional Scaling (MDS). The way each software implements these plots vary a bit, but in short, they provide some evidence for the relatedness of the samples. Another common plot shows the hierarchical clustering of samples by displaying a heatmap with a matrix of distances between the samples. By looking at these plots we can detect outliers that may need to be removed from the analysis, or possible batch effects that we need to control.
 
+DESeq2 and edgeR also plot the estimates of the biological coefficient of variation (BCV) plot, which not only depicts the sample variation of genes accordinf to their expression, but also illustrates the type of variation correction the software performed, as we discussed in the previous section. Typically, the variation in gene expression is bigger on genes that are low expressed.
+
+Finally, another type of common plot is the MA or vulcano plot, which displays the average normalized expression of genes and their log fold change between the groups being compared. On top of these graphs it is common to signal the genes that were detected as differentially expressed. 
 
 How would you go about selecting genes of interest? What would you do with this list? Is statistically significant the same as biologically significant?
 
-**Task**: In Galaxy, use DESeq2 and edgerR with the htseq-count results you obtained for your complete dataset.
+**Task**: In Galaxy, use DESeq2 to perform a pairwise comparison with the htseq-count results you obtained for your complete dataset. Look at the set of plots produced by the software
 
 
 		Produce PCA plots comparing all samples: outlier detection
 		Visualize expression profiles of top differentially expressed genes
 		Produce other plots such as vulcano plots
-
-[Check DESeq for Salmon output may fail due to some R libraries that may be needed??]
-
 
 ## LO 8.3 - Use more complex settings: Generalized Linear Models
 
