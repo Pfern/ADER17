@@ -28,7 +28,7 @@ Basic Unix command line skills, such as being able to navigate in a directory tr
 
 # Learning Objectives
 
-At the end of the course, we expect every participant to be able to:
+Curse participants will go through a series of experiences that utimately lead to create enhanced capabilities to:
 
 	1. List broad characteristics of NGS technologies and choose adequate sequencing for your biological question
 	2. Have a broad overview of the steps in the analysis of RNA-Seq differential expression experiments
@@ -40,9 +40,9 @@ At the end of the course, we expect every participant to be able to:
 	8. Generate lists of differentially expressed genes, at least for a simple pairwise comparison
 	9. Perform simple functional enrichment analysis and understand the concepts behind them
 
-For this, we will provide small example datasets that participants can use to learn. 
+For this, we are providing small example datasets and exercises that participants can use to learn. 
 
-Participants are encouraged to bring their own data and try some of the concepts they learned. For simple cases, participants may even be able to generate the complete analysis on their own data.
+Participants are encouraged to bring their own data and try some of the concepts they learned. For simple cases, participants may even be able to generate a complete analysis of their own data.
 
 
 ## Learning outcomes (LO) for each unit:
