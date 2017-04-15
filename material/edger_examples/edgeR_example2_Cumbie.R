@@ -1,4 +1,4 @@
-rawdata <- read.delim("edgeR_example2_Cumbie.tab", check.names=FALSE, stringsAsFactors=FALSE)
+rawdata <- read.delim("edgeR_example2_Cumbie.tab", check.names=FALSE, stringsAsFactors=FALSE,row.names=1)
 library(edgeR)
 Treat <- factor(substring(colnames(rawdata),1,4))
 Treat <- relevel(Treat, ref="mock")
