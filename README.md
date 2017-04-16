@@ -1,8 +1,8 @@
-# ADER17 #
+# ADER17 - Analysis of Differential Expression with RNAseq #
 
-4-day course at Instituto Gulbenkian de Ciência
+A 4-day hands-on training course at Instituto Gulbenkian de Ciência
 
-Official course page
+Official course page of the Gulbenkian Training Programme in Bioinformatics - GTPB
 
 http://gtpb.igc.gulbenkian.pt/bicourses/ADER17/
 
@@ -28,7 +28,7 @@ Basic Unix command line skills, such as being able to navigate in a directory tr
 
 # Learning Objectives
 
-Curse participants will go through a series of experiences that utimately lead to create enhanced capabilities to:
+Course participants will go through a series of experiences that utimately lead to create enhanced capabilities to:
 
 	1. List broad characteristics of NGS technologies and choose adequate sequencing for your biological question
 	2. Have a broad overview of the steps in the analysis of RNA-Seq differential expression experiments
