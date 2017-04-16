@@ -1,6 +1,7 @@
-# ADER17 - Analysis of Differential Expression with RNAseq #
+# ADER17 #
+# Analysis of Differential Expression with RNAseq #
 
-A 4-day hands-on training course at Instituto Gulbenkian de Ciência
+A hands-on training course at Instituto Gulbenkian de Ciência (4-days)
 
 Official course page of the Gulbenkian Training Programme in Bioinformatics - GTPB
 
