@@ -132,7 +132,7 @@ Participants are encouraged to bring their own data and try some of the concepts
 
 	LO 9 - Perform simple functional enrichment analysis and understand the concepts involved
 		
-		LO 9.1 - How to extracting meaning from a list of genes
+		LO 9.1 - How to extract meaning from a list of genes
 			What are functional annotations, what types exist, and where to get them
        
 		LO 9.2 - Understand the concept of functional enrichment analysis, and the statistics involved
