@@ -339,9 +339,19 @@ Are there significantly enriched terms at 0.001 significance without multiple te
 
 ## LO 9.3 - Interpreting the results of functional enrichment analysis
 
-	Using functional enrichment analysis with your lists of genes
+It is essential to keep in mind that **statistically significant does not mean biologically meaningful**.
 
+On the one hand, we can have functional enrichment of functional aspects that are too broad to derive any relevant conclusion, or that appear to be unrelated to the experiment in question. You should look at these with a critical eye − there may be some underlying meaning that is not readily apparent, even in the case of very generic terms such as “protein binding” or “single organism process”. In general, though, we’re more interested in functional aspects that are more specific.
 
+On the other hand, aspects that are too specific may not be very interesting. In the extreme case of a biological process associated with a single gene in a given organism, if that gene appears in the study set, it is likely to be statistically enriched (if the study set is relatively small in comparison with the population set), but that doesn’t give us any insight into the study set as a whole.
+In general, we’re interested in GO terms that are sufficiently generic to integrate a significant part of our dataset, but sufficiently specific to give us some conclusive insights.
 
+Because of GO’s hierarchical structure, we may get related enriched terms with different levels of specificity, and we should consider them together as a cluster when drawing conclusions. These clusters may not be readily apparent from a results table, but are easy to detect in a graph view of the results (albeit graph views are not always easy to analyze due to the large size of GO).
 
+It is also essential to consider that sporadic outliers may occur, despite multiple test corrections. Keep in mind that we’re making a statistical test (of enrichment) on top of another (of differential expression) which in turn is preceded by a statistical normalization. Even though we’re comfortable with the assumptions and p-values in each individual step, the likelihood of error propagates across the steps.
 
+You should also keep in mind that enrichment analysis is qualitative, rather than quantitative: you are treating genes as either “on” or “off” (be “on” differentially expressed, overexpressed, or underexpressed) and consequently only assessing which functional aspects are statistically affected, rather than by how much they are affected.
+
+**Task**: Run an enrichment analysis test on the GOEnrichment tool in Galaxy, using the FEA_dataset2 in the git repository. Use the go.obo and Mouse annotation file you got from BioMart earlier, as well as the dataset files. Run the program with the default options, then analyze the results tables.
+
+**Task**: Run another enrichment analysis test on the GOEnrichment tool in Galaxy, using the FEA_dataset3 in the git repository. This time you will have to process the dataset to generate the lists of overexpressed and underexpressed genes. Hint: paste the dataset into a spreadsheet, and sort it and manipulate it there, then copy your up and down study sets, as well as your population set into text files. Analyze the results tables, then download the graph files and open them in yED.
