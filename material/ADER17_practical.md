@@ -304,7 +304,38 @@ Viewing the annotations of your gene set on an individual gene basis is unfeasib
 
 ## LO 9.2 - Understand the concept of functional enrichment analysis, and the statistics involved
 
-	Question: when and why do we need multiple test corrections?
+Functional enrichment analysis is the application of Fisher’s exact test to measure the statistical significance of the observed frequency of each functional annotation in a gene set. The test relies on computing the probability of said frequencies arising by chance, using the hypergeometric distribution.
+
+The statistical problem is essentially the same as determining the probability of getting x black balls in a sample of n balls, drawn without replacement from a bag with X black balls and a total of N balls. In our case the balls are genes, and a color is a functional annotation.
+
+To compute the probability, we need to know the following parameters:
+- The sample frequency: number of genes in the set annotated with the term
+- The sample size: total number of genes (with any annotation) in the set
+- The population frequency: number of genes in the population annotated with the term
+- The population size: total number of genes (with any annotation) in the population
+
+The population should be the total set of genes involved in the study: all expressed genes in the case of RNAseq, genes contained in the microarray in the case of microarray studies, etc. You should not use the whole genome as the population unless your dataset actually spans the whole genome. The study set can be defined in different ways: all genes with statistically significant differences in expression, only those with increased expression, or only those with decreased expression. It may make sense to perform enrichment analysis with all three study set options, as each gives you a different insight into your dataset. Note that you can also consider different thresholds for statistical significance, and different thresholds for expression increase/decrease, which may affect the enrichment analysis results.
+
+When you use a GO enrichment analysis tool, you don’t need to define the sample or population frequencies. Instead, either you provide or the tool accesses the GO annotation set for your organism,  which is used to compute the frequencies for both sets. The tool should exclude from both sets the genes that don’t have GO annotations (of the aspect you are considering) − we don’t know their function at all, so we shouldn’t consider them as either positive or negative for any given functional aspect. However, not all tools do this, and it affects the results they produce.
+
+Biological process is typically the most interesting aspect for enrichment analysis, but it may also be interesting to analyze the molecular function or cellular component aspect in particular studies − namely for validation. For instance, in a proteomics study where you sampled membrane proteins, you should do enrichment analysis with cellular component, to verify that “cellular membrane” is enriched.
+
+Most of our statistical tests − including Fisher’s exact test − rely on controlling type I errors. When we accept an event/observation as significant because it has a p-value of 0.001, we are accepting that statistically, one time in a thousand, we’ll be wrong − the event/observation in question will be the product of chance alone. This is a problem when we perform multiple related tests, as the chance of getting a statistical “extreme” in at least one of them will be greater the more tests we perform. Because GO enrichment analysis relies on performing hundreds (or sometimes thousands) of Fisher’s tests, we must correct the statistics for multiple testing.
+
+There are two families of multiple test corrections: the family-wise error rate (FWER) and the false discovery rate (FDR). In the former, we control the probability of making at least one false discovery, which is a conservative but “safe” approach that produces corrected p-values. In the latter, we control the ratio of false discoveries, which is a more powerful but less “safe” approach. It produces q-values, which indicate the ratio of false discoveries you are accepting if you reject the null hypothesis.
+
+QUESTION: Why do we need multiple test corrections? What is the difference between a p-value, a corrected p-value, and a q-value?
+
+Because GO is deeply hierarchic, performing enrichment analysis across GO requires a high number of tests, but not that many of them are independent. Thus, multiple test correction methods overestimate the error likelihood/rate. One way to reduce this effect is to not make redundant tests. For instance, if the frequencies of “protein binding” and its parent “binding” in your study set are the same, testing “binding” is redundant − the test can only be positive if the test of “protein binding” is positive, and the latter is more informative than the former.
+
+There are several GO enrichment analysis tools available, for instance:
+- Webtools: GOrilla (http://cbl-gorilla.cs.technion.ac.il/), GO’s own tool (http://www.geneontology.org/page/go-enrichment-analysis)
+- Galaxy/stand-alone tools: GOEnrichment [IGC]; Ontologizer [test toolbox]
+- R tools: gsea, GOstats, topGO
+
+**Task**: Run an enrichment analysis test on GOrilla. Use the FEA_dataset1 from the Git repository, which contains the overexpressed genes from the Drosophila melanogaster dataset with 300 random genes differentially expressed. Choose “Two unranked lists of genes” as the running mode; paste or upload the study set into “target set” and the population set into “background set”. Use the biological process ontology, then repeat the analysis for the molecular function ontology.
+Are there significantly enriched terms at 0.001 significance without multiple test corrections? And with the correction?
+
 
 ## LO 9.3 - Interpreting the results of functional enrichment analysis
 
